@@ -168,6 +168,47 @@ if "last_name" not in st.session_state:
     st.session_state.last_name = ""
 
 
+
+def explain_risk(user_row):
+    reasons = []
+
+    # BMI
+    bmi = user_row.get("BMI (kg/m²)")
+    if bmi is not None and bmi > 25:
+        reasons.append("BMI is above the healthy range (>25 kg/m²)")
+
+    # Waist circumference
+    waist = user_row.get("Waist circumference (cm)")
+    if waist is not None and waist > 90:
+        reasons.append("Waist circumference suggests central obesity")
+
+    # Blood pressure
+    sbp = user_row.get("Systolic BP (mmHg)")
+    dbp = user_row.get("Diastolic BP (mmHg)")
+    if sbp is not None and sbp >= 130:
+        reasons.append("Systolic blood pressure is elevated")
+    if dbp is not None and dbp >= 85:
+        reasons.append("Diastolic blood pressure is elevated")
+
+    # Lifestyle factors
+    if user_row.get("How often do you exercise per week?") in ["Never", "1–2 days/week"]:
+        reasons.append("Low level of physical activity")
+
+    if user_row.get("Do you have a family history of diabetes?") == "Yes":
+        reasons.append("Family history of diabetes increases risk")
+
+    if user_row.get("Do you often feel unusually thirsty?") == "Yes":
+        reasons.append("Presence of classic diabetes-related symptoms")
+
+    if user_row.get("Do you experience frequent urination?") == "Yes":
+        reasons.append("Frequent urination is a common early symptom")
+
+    if not reasons:
+        reasons.append("No strong individual risk factors detected from inputs")
+
+    return reasons
+
+
 # =========================
 # Tabs
 # =========================
@@ -179,6 +220,7 @@ tab1, tab2, tab3, tab4 = st.tabs(
 # =========================
 # TAB 1: Prediction
 # =========================
+
 with tab1:
     st.subheader("Risk Prediction")
     st.write("Enter details. This is a **screening estimate (not a diagnosis)**.")
@@ -228,6 +270,7 @@ with tab1:
 
     if st.button("Predict"):
         st.session_state.last_name = name
+        st.session_state.last_input = user_row
         try:
             X_input = pd.DataFrame([user_row])
             prob = float(pipe.predict_proba(X_input)[:, 1][0])
@@ -250,85 +293,112 @@ with tab1:
 # =========================
 # TAB 2: Feature importance
 # =========================
-from sklearn.inspection import permutation_importance
-
 with tab2:
     st.subheader("Why risk is high?")
-    st.write("Based on permutation importance (ROC-AUC drop).")
+    st.write("Explanation based on your inputs and established health guidelines.")
 
-    try:
-        # Use a small background sample for speed
-        X_bg = pd.DataFrame(
-            [st.session_state.get("last_input")] if "last_input" in st.session_state else None
+    if "last_input" not in st.session_state:
+        st.info("Please run a risk prediction first.")
+    else:
+        reasons = explain_risk(st.session_state.last_input)
+
+        for r in reasons:
+            st.write("•", r)
+
+        st.caption(
+            "Explanation is based on known clinical risk factors and model findings "
+            "reported during evaluation. This improves transparency for users."
         )
-
-        # Safer: use training data shape
-        perm = permutation_importance(
-            pipe,
-            X_input if 'X_input' in locals() else X_input,
-            np.array([1]),
-            n_repeats=5,
-            random_state=42,
-            scoring="roc_auc"
-        )
-
-        # Get feature names
-        try:
-            names = pipe.named_steps["preprocess"].get_feature_names_out()
-        except Exception:
-            names = [f"feature_{i}" for i in range(len(perm.importances_mean))]
-
-        imp_df = (
-            pd.DataFrame({
-                "Feature": names,
-                "Importance": perm.importances_mean
-            })
-            .sort_values("Importance", ascending=False)
-            .head(12)
-        )
-
-        fig = plt.figure()
-        plt.barh(imp_df["Feature"][::-1], imp_df["Importance"][::-1])
-        plt.title("Top features affecting diabetes risk")
-        plt.tight_layout()
-        st.pyplot(fig)
-
-    except Exception as e:
-        st.warning("Feature importance is shown at model-level in the report.")
-
 
 
 # =========================
 # TAB 3: Awareness quiz
 # =========================
 with tab3:
-    st.subheader("Awareness Quiz (5 questions)")
-    st.write("Answer quickly — you’ll get tips.")
+    st.subheader("Awareness Quiz (10 questions)")
+    st.write(
+        "Answer honestly. You’ll receive personalised diabetes-prevention tips "
+        "based on lifestyle and health awareness."
+    )
 
-    q1 = st.radio("Exercise per week?", ["Rarely", "1–2 days/week", "3–5 days/week", "Almost daily"])
-    q2 = st.radio("Sugary drinks per day?", ["0", "1", "2", "3+"])
-    q3 = st.radio("Rice portion?", ["Small", "Medium", "Large"])
-    q4 = st.radio("Family history of diabetes?", ["No", "Yes"])
-    q5 = st.radio("Sleep?", ["<6 hours", "6–7 hours", "7–8 hours", "8+ hours"])
+    # -------------------------
+    # Questions
+    # -------------------------
+    q1 = st.radio("1) How often do you exercise (≥30 mins)?",
+                  ["Rarely", "1–2 days/week", "3–5 days/week", "Almost daily"])
 
-    if st.button("Get my tips"):
+    q2 = st.radio("2) Sweet tea / sugary drinks per day?",
+                  ["0", "1", "2", "3 or more"])
+
+    q3 = st.radio("3) Your usual rice portion?",
+                  ["Small", "Medium", "Large"])
+
+    q4 = st.radio("4) Family history of diabetes?",
+                  ["No", "Yes"])
+
+    q5 = st.radio("5) Average sleep per night?",
+                  ["<6 hours", "6–7 hours", "7–8 hours", "8+ hours"])
+
+    q6 = st.radio("6) How often do you eat fried foods?",
+                  ["Rarely", "1–2 times/week", "3–4 times/week", "Almost daily"])
+
+    q7 = st.radio("7) Fruits & vegetables intake per day?",
+                  ["<2 portions", "2–3 portions", "4–5 portions", "More than 5"])
+
+    q8 = st.radio("8) How often do you check blood sugar?",
+                  ["Never", "Only when sick", "Once a year", "Regularly"])
+
+    q9 = st.radio("9) How would you describe your stress level?",
+                  ["Low", "Moderate", "High"])
+
+    q10 = st.radio("10) Sitting time per day?",
+                   ["<4 hours", "4–6 hours", "6–8 hours", "More than 8 hours"])
+
+    # -------------------------
+    # Generate tips
+    # -------------------------
+    if st.button("Get my awareness tips"):
         tips = []
-        if q1 in ["Rarely", "1–2 days/week"]:
-            tips.append("Try 30 mins walking after dinner 5 days/week.")
-        if q2 != "0":
-            tips.append("Reduce sweet tea/soft drinks slowly (half sugar → none).")
-        if q3 == "Large":
-            tips.append("Reduce rice portion and add more vegetables (gotukola, mukunuwenna).")
-        if q4 == "Yes":
-            tips.append("Family history increases risk: do regular screening (FBS/HbA1c).")
-        if q5 == "<6 hours":
-            tips.append("Aim 7–8 hours sleep to improve insulin sensitivity.")
 
-        tips.append("Healthy snacks: roasted gram (kadala), plain yogurt, nuts (small portion).")
+        if q1 in ["Rarely", "1–2 days/week"]:
+            tips.append("Increase physical activity: walking, cycling, or home exercises at least 30 mins/day.")
+
+        if q2 in ["2", "3 or more"]:
+            tips.append("Reduce sugary drinks; switch to plain tea or water.")
+
+        if q3 == "Large":
+            tips.append("Reduce rice portion; increase vegetables like gotukola, mukunuwenna, beans, cabbage.")
+
+        if q4 == "Yes":
+            tips.append("Family history increases risk—do regular screening (FBS / HbA1c).")
+
+        if q5 == "<6 hours":
+            tips.append("Improve sleep duration to 7–8 hours to reduce insulin resistance.")
+
+        if q6 in ["3–4 times/week", "Almost daily"]:
+            tips.append("Limit fried foods; choose boiled, steamed, or grilled options.")
+
+        if q7 in ["<2 portions", "2–3 portions"]:
+            tips.append("Increase fruits and vegetables to at least 4–5 portions daily.")
+
+        if q8 in ["Never", "Only when sick"]:
+            tips.append("Check blood sugar periodically, especially if risk factors are present.")
+
+        if q9 == "High":
+            tips.append("Manage stress through relaxation, prayer, breathing exercises, or walking.")
+
+        if q10 in ["6–8 hours", "More than 8 hours"]:
+            tips.append("Reduce prolonged sitting—stand or walk for 5 minutes every hour.")
+
+        tips.append("Maintain a healthy waist circumference and blood pressure.")
+        tips.append("Avoid smoking and excessive alcohol consumption.")
+
         st.session_state.last_tips = tips
 
+        st.markdown("### Your Personal Awareness Tips")
         for t in tips:
             st.write("•", t)
+
 
 
 # =========================
