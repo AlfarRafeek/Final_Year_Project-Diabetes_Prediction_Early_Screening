@@ -34,18 +34,27 @@ st.caption("Educational screening prototype (not a diagnosis).")
 #
 # Replace the example list below with your exact list.
 FEATURE_COLUMNS = [
-    # ---- EXAMPLE (replace with your real columns) ----
     "Age",
-    "BMI (kg/m²)",
+    "Gender",
+    "Hight(cm)",
+    "Weight(kg)",
+    "Do you have a family history of diabetes?",
+    "How often do you exercise per week?",
+    "How would you describe your diet?",
+    "Have you ever been diagnosed with high blood pressure or cholesterol?",
+    "Do you experience frequent urination?",
+    "Do you often feel unusually thirsty?",
+    "Have you noticed unexplained weight loss or gain?",
+    "Do you feel unusually fatigued or tired?",
+    "Do you have blurred vision or slow-healing wounds?",
+    "Occupation",
+    "Average sleep hours per night",
+    "Waist circumference (cm)",
     "Systolic BP (mmHg)",
     "Diastolic BP (mmHg)",
-    "Waist circumference (cm)",
-    "Family history of diabetes",
-    "Physical activity level",
-    "Smoking status",
-    "Alcohol consumption",
-    "Sleep duration"
+    "BMI (kg/m²)"
 ]
+
 
 
 # =========================
