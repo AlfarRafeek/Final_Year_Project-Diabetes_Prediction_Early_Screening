@@ -1,8 +1,6 @@
 # =========================
 # INSTALL MISSING LIBRARIES
 # =========================
-!pip install streamlit reportlab
-
 import streamlit as st
 import pandas as pd
 import numpy as np
