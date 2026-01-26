@@ -8,7 +8,7 @@ from reportlab.lib.pagesizes import A4
 from reportlab.pdfgen import canvas
 
 # -------- App config --------
-st.set_page_config(page_title=":blood: Diabetes Screening & Awareness", layout="centered")
+st.set_page_config(page_title="Diabetes Screening & Awareness", layout="centered")
 
 MODEL_PATH = "best_pipe.pkl"
 THRESHOLD = 0.40
@@ -174,7 +174,7 @@ def make_pdf(name, prob, label, tips):
 # -------- Main UI --------
 init_state()
 
-st.title("🩺 Diabetes Risk Screening + Awareness (Sri Lanka)")
+st.title(":blood: Diabetes Risk Screening + Awareness (Sri Lanka)")
 st.caption("Educational screening prototype (not a diagnosis).")
 
 try:
