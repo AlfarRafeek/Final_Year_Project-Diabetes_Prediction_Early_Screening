@@ -174,7 +174,7 @@ def make_pdf(name, prob, label, tips):
 # -------- Main UI --------
 init_state()
 
-st.title(":blood: Diabetes Risk Screening + Awareness (Sri Lanka)")
+st.title("🩺 Type 2 Diabetes Risk Screening + Awareness (Sri Lanka)")
 st.caption("Educational screening prototype (not a diagnosis).")
 
 try:
