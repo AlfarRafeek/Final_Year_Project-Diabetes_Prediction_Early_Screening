@@ -1,31 +1,13 @@
-# streamlit_app.py
-# ============================================================
-# Diabetes Early Screening - DATA ANALYTICS DASHBOARD (Streamlit)
-# - Matches PPS: visualize risk levels + key predictive variables
-# - Includes EDA + Risk distribution + Significant factors + Model eval + Prediction
-#
-# Works in 2 modes:
-#   1) If best_pipe.pkl exists and loads -> uses it
-#   2) If not / incompatible -> trains a quick baseline pipeline from the uploaded Excel
-#
-# IMPORTANT (for Streamlit Cloud):
-# - Put your dataset in the repo OR upload via the app uploader.
-# - Recommended repo structure:
-#     streamlit_app.py
-#     requirements.txt
-#     Diabetes Risk Survey (Responses) (1).xlsx   (optional if you prefer uploader)
-#     best_pipe.pkl                               (optional)
-# ============================================================
-
-import os
 import warnings
 warnings.filterwarnings("ignore")
 
+import io
+from datetime import datetime
+
 import numpy as np
 import pandas as pd
-import joblib
-import matplotlib.pyplot as plt
 import streamlit as st
+import matplotlib.pyplot as plt
 
 from sklearn.model_selection import train_test_split, StratifiedKFold
 from sklearn.compose import ColumnTransformer
@@ -33,46 +15,63 @@ from sklearn.preprocessing import OneHotEncoder, StandardScaler
 from sklearn.impute import SimpleImputer
 from sklearn.pipeline import Pipeline
 from sklearn.metrics import (
-    accuracy_score, precision_score, recall_score, f1_score, roc_auc_score,
-    confusion_matrix, ConfusionMatrixDisplay, RocCurveDisplay
+    roc_auc_score, accuracy_score, precision_score, recall_score, f1_score,
+    confusion_matrix
 )
 from sklearn.inspection import permutation_importance
+
 from sklearn.linear_model import LogisticRegression
+from sklearn.svm import SVC
+from sklearn.ensemble import RandomForestClassifier, ExtraTreesClassifier, HistGradientBoostingClassifier
+
+from imblearn.over_sampling import SMOTE
+from imblearn.pipeline import Pipeline as ImbPipeline
+
+from fpdf import FPDF
 
 
 # -----------------------------
-# CONFIG
+# PAGE SETTINGS
 # -----------------------------
-st.set_page_config(page_title="Diabetes Analytics Dashboard (Sri Lanka)", layout="wide")
+st.set_page_config(page_title="Diabetes Risk Analytics Dashboard (Sri Lanka)", layout="wide")
+st.title("📊 Diabetes Risk Analytics Dashboard (Sri Lanka)")
+st.caption("Prototype for early screening + analytics (Educational tool — not a diagnosis).")
 
+
+# -----------------------------
+# CONSTANTS (your dataset columns)
+# -----------------------------
 TARGET_COL = "Have you ever been diagnosed with diabetes?"
-DEFAULT_DATA_FILE = "Diabetes Risk Survey (Responses) (1).xlsx"
-DEFAULT_MODEL_FILE = "best_pipe.pkl"
+LEAKAGE_COL = "Are you currently taking any medications for diabetes or related conditions?"
+DROP_COLS_ALWAYS = ["Timestamp"]  # safe to drop
+
 RANDOM_STATE = 42
-
-RISK_BINS_DEFAULT = (0.40, 0.70)  # low <0.40, med 0.40-0.69, high >=0.70
+THRESHOLD = 0.40  # you can tune later
 
 
 # -----------------------------
-# HELPER: clean + prepare data
+# HELPERS
 # -----------------------------
-def load_data_from_excel(path: str) -> pd.DataFrame:
-    df = pd.read_excel(path)
+def load_excel(file_like) -> pd.DataFrame:
+    df0 = pd.read_excel(file_like)
+    df0.columns = [c.strip() for c in df0.columns]
+    return df0
 
-    # Drop Timestamp if exists
-    if "Timestamp" in df.columns:
-        df = df.drop(columns=["Timestamp"])
 
-    # Strip column names
-    df.columns = [str(c).strip() for c in df.columns]
+def clean_dataset(df: pd.DataFrame) -> pd.DataFrame:
+    df = df.copy()
 
-    # Clean target mapping
-    if TARGET_COL in df.columns:
-        df[TARGET_COL] = df[TARGET_COL].astype(str).str.strip().map({"No": 0, "Yes": 1})
-        df = df.dropna(subset=[TARGET_COL])
-        df[TARGET_COL] = df[TARGET_COL].astype(int)
+    # drop timestamp if present
+    for c in DROP_COLS_ALWAYS:
+        if c in df.columns:
+            df = df.drop(columns=[c])
 
-    # Numeric conversions (safe)
+    # clean target
+    df[TARGET_COL] = df[TARGET_COL].astype(str).str.strip()
+    df = df[df[TARGET_COL].isin(["Yes", "No"])].copy()
+    df[TARGET_COL] = df[TARGET_COL].map({"No": 0, "Yes": 1}).astype(int)
+
+    # numeric conversions
     for col in ["Waist circumference (cm)", "Systolic BP (mmHg)", "Diastolic BP (mmHg)", "BMI (kg/m²)"]:
         if col in df.columns:
             df[col] = pd.to_numeric(df[col], errors="coerce")
@@ -84,600 +83,571 @@ def build_preprocessor(X: pd.DataFrame) -> ColumnTransformer:
     num_cols = X.select_dtypes(include=["number"]).columns.tolist()
     cat_cols = [c for c in X.columns if c not in num_cols]
 
-    numeric_pipe = Pipeline(steps=[
+    num_pipe = Pipeline(steps=[
         ("imputer", SimpleImputer(strategy="median")),
-        ("scaler", StandardScaler())
+        ("scaler", StandardScaler()),
     ])
 
     cat_pipe = Pipeline(steps=[
         ("imputer", SimpleImputer(strategy="most_frequent")),
-        ("onehot", OneHotEncoder(handle_unknown="ignore"))
+        ("onehot", OneHotEncoder(handle_unknown="ignore")),
     ])
 
     pre = ColumnTransformer(
         transformers=[
-            ("num", numeric_pipe, num_cols),
+            ("num", num_pipe, num_cols),
             ("cat", cat_pipe, cat_cols),
         ],
-        remainder="drop"
+        remainder="drop",
+        verbose_feature_names_out=False
     )
     return pre
 
 
-def try_load_model(model_path: str):
-    if not os.path.exists(model_path):
-        return None, f"Model file not found: {model_path}"
-    try:
-        pipe = joblib.load(model_path)
-        return pipe, None
-    except Exception as e:
-        return None, str(e)
-
-
-@st.cache_resource
-def train_fallback_model(df: pd.DataFrame):
-    """
-    If best_pipe.pkl is missing/incompatible, train a quick baseline pipeline.
-    This keeps the dashboard working on Streamlit Cloud.
-    """
-    if TARGET_COL not in df.columns:
-        raise ValueError(f"Target column not found: {TARGET_COL}")
-
-    X = df.drop(columns=[TARGET_COL])
-    y = df[TARGET_COL].astype(int)
-
-    # OPTIONAL: drop likely leakage column if present (post-diagnosis)
-    leakage_col = "Are you currently taking any medications for diabetes or related conditions?"
-    if leakage_col in X.columns:
-        X = X.drop(columns=[leakage_col])
-
-    X_train, X_test, y_train, y_test = train_test_split(
-        X, y, test_size=0.25, random_state=RANDOM_STATE, stratify=y
-    )
-
-    pre = build_preprocessor(X_train)
-    model = LogisticRegression(max_iter=3000, class_weight="balanced", random_state=RANDOM_STATE)
-
-    pipe = Pipeline(steps=[
-        ("preprocess", pre),
-        ("model", model)
-    ])
-
-    pipe.fit(X_train, y_train)
-    return pipe, X_train, X_test, y_train, y_test
-
-
-def get_train_test_from_pipe(df: pd.DataFrame):
-    """
-    For consistency, we create a split for evaluation visuals.
-    This is independent from the uploaded model training split.
-    """
-    X = df.drop(columns=[TARGET_COL])
-    y = df[TARGET_COL].astype(int)
-
-    leakage_col = "Are you currently taking any medications for diabetes or related conditions?"
-    if leakage_col in X.columns:
-        X = X.drop(columns=[leakage_col])
-
-    return train_test_split(X, y, test_size=0.25, random_state=RANDOM_STATE, stratify=y)
-
-
-def risk_group(prob: float, low_thr: float, high_thr: float) -> str:
-    if prob < low_thr:
-        return "Low"
-    if prob < high_thr:
-        return "Medium"
-    return "High"
-
-
-def fig_target_distribution(y: pd.Series):
-    counts = y.value_counts().sort_index()
-    fig = plt.figure()
-    plt.bar(["No (0)", "Yes (1)"], [counts.get(0, 0), counts.get(1, 0)])
-    plt.title("Diabetes Target Distribution")
-    plt.ylabel("Count")
-    plt.tight_layout()
-    return fig
-
-
-def fig_hist(series: pd.Series, title: str, xlabel: str):
-    fig = plt.figure()
-    plt.hist(series.dropna(), bins=20)
-    plt.title(title)
-    plt.xlabel(xlabel)
-    plt.ylabel("Frequency")
-    plt.tight_layout()
-    return fig
-
-
-def fig_box_by_target(df: pd.DataFrame, col: str):
-    fig = plt.figure()
-    a = df[df[TARGET_COL] == 0][col].dropna()
-    b = df[df[TARGET_COL] == 1][col].dropna()
-    plt.boxplot([a, b], labels=["No (0)", "Yes (1)"])
-    plt.title(f"{col} by Diabetes Status")
-    plt.ylabel(col)
-    plt.tight_layout()
-    return fig
-
-
-def fig_cat_by_target(df: pd.DataFrame, col: str):
-    # counts by target and category
-    tmp = df[[col, TARGET_COL]].dropna()
-    ct = pd.crosstab(tmp[col], tmp[TARGET_COL])
-    # ensure both columns exist
-    if 0 not in ct.columns:
-        ct[0] = 0
-    if 1 not in ct.columns:
-        ct[1] = 0
-    ct = ct[[0, 1]].sort_index()
-
-    fig = plt.figure()
-    x = np.arange(len(ct.index))
-    plt.bar(x - 0.2, ct[0].values, width=0.4, label="No (0)")
-    plt.bar(x + 0.2, ct[1].values, width=0.4, label="Yes (1)")
-    plt.xticks(x, ct.index.astype(str), rotation=45, ha="right")
-    plt.title(f"{col} vs Diabetes Status")
-    plt.ylabel("Count")
-    plt.legend()
-    plt.tight_layout()
-    return fig
-
-
-@st.cache_data
-def compute_permutation_importance(pipe, X_test, y_test, scoring="roc_auc", n_repeats=10):
-    perm = permutation_importance(
-        pipe, X_test, y_test,
-        n_repeats=n_repeats,
-        random_state=RANDOM_STATE,
-        scoring=scoring
-    )
-
-    # feature names after preprocessing (best effort)
-    feat_names = None
-    try:
-        pre = pipe.named_steps.get("preprocess") or pipe.named_steps.get("preprocessor")
-        if pre is not None:
-            feat_names = pre.get_feature_names_out()
-    except Exception:
-        feat_names = None
-
-    if feat_names is None or len(feat_names) != len(perm.importances_mean):
-        feat_names = [f"feature_{i}" for i in range(len(perm.importances_mean))]
-
-    imp_df = pd.DataFrame({
-        "feature": feat_names,
-        "importance": perm.importances_mean
-    }).sort_values("importance", ascending=False)
-
-    return imp_df
-
-
-def fig_importance_bar(imp_df: pd.DataFrame, top_k=12, title="Permutation Importance (ROC-AUC drop)"):
-    top = imp_df.head(top_k).copy()
-    fig = plt.figure()
-    plt.barh(top["feature"][::-1], top["importance"][::-1])
-    plt.title(title)
-    plt.xlabel("Importance")
-    plt.tight_layout()
-    return fig
-
-
-# -----------------------------
-# UI HEADER
-# -----------------------------
-st.title("📊 Diabetes Risk Analytics Dashboard (Sri Lanka)")
-st.caption("Data analytics dashboard to visualize diabetes risk levels and significant predictive factors (PPS-aligned).")
-
-
-# -----------------------------
-# SIDEBAR: Data + Model sources
-# -----------------------------
-st.sidebar.header("Data & Model")
-
-uploaded = st.sidebar.file_uploader("Upload your dataset (Excel .xlsx)", type=["xlsx"])
-
-data_path_used = None
-df = None
-
-if uploaded is not None:
-    df = pd.read_excel(uploaded)
-    df.columns = [str(c).strip() for c in df.columns]
-    # Apply same cleaning using a temp file-like approach
-    # Convert using same logic after reading:
-    if "Timestamp" in df.columns:
-        df = df.drop(columns=["Timestamp"])
-    if TARGET_COL in df.columns:
-        df[TARGET_COL] = df[TARGET_COL].astype(str).str.strip().map({"No": 0, "Yes": 1})
-        df = df.dropna(subset=[TARGET_COL])
-        df[TARGET_COL] = df[TARGET_COL].astype(int)
-    for col in ["Waist circumference (cm)", "Systolic BP (mmHg)", "Diastolic BP (mmHg)", "BMI (kg/m²)"]:
-        if col in df.columns:
-            df[col] = pd.to_numeric(df[col], errors="coerce")
-
-    data_path_used = "Uploaded file"
-else:
-    if os.path.exists(DEFAULT_DATA_FILE):
-        df = load_data_from_excel(DEFAULT_DATA_FILE)
-        data_path_used = DEFAULT_DATA_FILE
-
-if df is None:
-    st.warning("Upload the Excel dataset in the sidebar, or add it to the repo with the expected filename.")
-    st.stop()
-
-if TARGET_COL not in df.columns:
-    st.error(f"Target column not found in dataset: {TARGET_COL}")
-    st.info("Check your Excel column name matches exactly.")
-    st.stop()
-
-st.sidebar.success(f"Loaded data: {data_path_used}")
-st.sidebar.write("Rows:", df.shape[0])
-st.sidebar.write("Columns:", df.shape[1])
-
-# Risk thresholds
-low_thr, high_thr = st.sidebar.slider(
-    "Risk group thresholds (Low / Medium / High)",
-    min_value=0.05, max_value=0.95, value=RISK_BINS_DEFAULT, step=0.05
-)
-
-# Model load preference
-use_saved_model = st.sidebar.toggle("Use saved model (best_pipe.pkl) if available", value=True)
-
-pipe = None
-pipe_source = None
-
-if use_saved_model:
-    pipe, err = try_load_model(DEFAULT_MODEL_FILE)
-    if pipe is not None:
-        pipe_source = "Loaded best_pipe.pkl"
-    else:
-        pipe_source = f"Fallback (could not load best_pipe.pkl: {err})"
-
-if pipe is None:
-    pipe, X_train, X_test, y_train, y_test = train_fallback_model(df)
-    pipe_source = "Trained fallback baseline (Logistic Regression)"
-
-st.sidebar.info(f"Model source: {pipe_source}")
-
-
-# -----------------------------
-# CREATE TRAIN/TEST FOR EVAL VISUALS
-# -----------------------------
-X_tr, X_te, y_tr, y_te = get_train_test_from_pipe(df)
-
-# Make sure pipeline can run on these columns:
-# If best_pipe.pkl expects different columns, evaluation tab will show a friendly message.
-model_eval_ok = True
-try:
-    pipe.predict_proba(X_te.head(2))
-except Exception:
-    model_eval_ok = False
-
-
-# -----------------------------
-# TABS
-# -----------------------------
-tab1, tab2, tab3, tab4, tab5, tab6 = st.tabs([
-    "1) Data Overview",
-    "2) Risk Levels",
-    "3) Significant Factors",
-    "4) Relationships (EDA)",
-    "5) Model Performance",
-    "6) Prediction Tool"
-])
-
-
-# ============================================================
-# TAB 1: DATA OVERVIEW
-# ============================================================
-with tab1:
-    st.subheader("Dataset Overview")
-
-    colA, colB, colC, colD = st.columns(4)
-    colA.metric("Total responses", f"{df.shape[0]}")
-    colB.metric("Total columns", f"{df.shape[1]}")
-    colC.metric("Target column", TARGET_COL)
-    colD.metric("Missing cells", f"{int(df.isna().sum().sum())}")
-
-    st.markdown("### Preview (first 10 rows)")
-    st.dataframe(df.head(10), use_container_width=True)
-
-    st.markdown("### Target Distribution (Diabetes Yes/No)")
-    fig = fig_target_distribution(df[TARGET_COL])
-    st.pyplot(fig)
-
-    st.markdown("### Missing Values (top 12 columns)")
-    miss = df.isna().sum().sort_values(ascending=False)
-    miss = miss[miss > 0].head(12)
-    if len(miss) == 0:
-        st.info("No missing values detected.")
-    else:
-        fig2 = plt.figure()
-        plt.bar(miss.index.astype(str), miss.values)
-        plt.title("Missing Values (Top 12 Columns)")
-        plt.xticks(rotation=60, ha="right")
-        plt.ylabel("Missing count")
-        plt.tight_layout()
-        st.pyplot(fig2)
-
-    st.markdown("### Numeric Distributions")
-    num_candidates = [c for c in ["BMI (kg/m²)", "Waist circumference (cm)", "Systolic BP (mmHg)", "Diastolic BP (mmHg)"] if c in df.columns]
-    if not num_candidates:
-        st.info("No standard numeric health columns found for histograms.")
-    else:
-        cols = st.columns(min(2, len(num_candidates)))
-        for i, c in enumerate(num_candidates):
-            fig3 = fig_hist(df[c], f"Distribution of {c}", c)
-            cols[i % len(cols)].pyplot(fig3)
-
-
-# ============================================================
-# TAB 2: RISK LEVELS (risk distribution dashboard)
-# ============================================================
-with tab2:
-    st.subheader("Risk Level Dashboard (Probability-based)")
-
-    st.write(
-        "This section visualizes **risk levels** using the model's predicted probability. "
-        "Risk groups are created using your selected thresholds."
-    )
-
-    # Compute probabilities for all rows
-    X_all = df.drop(columns=[TARGET_COL]).copy()
-
-    # Drop leakage column if present (match training fallback)
-    leakage_col = "Are you currently taking any medications for diabetes or related conditions?"
-    if leakage_col in X_all.columns:
-        X_all = X_all.drop(columns=[leakage_col])
-
-    prob_all = None
-    try:
-        prob_all = pipe.predict_proba(X_all)[:, 1]
-    except Exception as e:
-        st.error("Could not compute probabilities for the dataset (model-feature mismatch).")
-        st.code(str(e))
-        st.info("Fix: Ensure the model was trained using the same columns as this dataset.")
-        st.stop()
-
-    df_risk = df.copy()
-    df_risk["pred_prob"] = prob_all
-    df_risk["risk_level"] = [risk_group(p, low_thr, high_thr) for p in df_risk["pred_prob"]]
-
-    # Risk distribution
-    risk_counts = df_risk["risk_level"].value_counts().reindex(["Low", "Medium", "High"]).fillna(0).astype(int)
-
-    c1, c2, c3 = st.columns(3)
-    c1.metric("Low risk", int(risk_counts["Low"]))
-    c2.metric("Medium risk", int(risk_counts["Medium"]))
-    c3.metric("High risk", int(risk_counts["High"]))
-
-    fig = plt.figure()
-    plt.bar(risk_counts.index, risk_counts.values)
-    plt.title("Risk Group Distribution")
-    plt.ylabel("Count")
-    plt.tight_layout()
-    st.pyplot(fig)
-
-    # Top high risk profiles
-    st.markdown("### Top 10 Highest-Risk Profiles (for analysis)")
-    show_cols = [c for c in df_risk.columns if c not in []]
-    top10 = df_risk.sort_values("pred_prob", ascending=False).head(10)
-    st.dataframe(top10[show_cols], use_container_width=True)
-
-    st.markdown("### Probability Distribution")
-    fig2 = plt.figure()
-    plt.hist(df_risk["pred_prob"], bins=20)
-    plt.title("Predicted Probability Distribution")
-    plt.xlabel("Predicted probability of diabetes")
-    plt.ylabel("Count")
-    plt.tight_layout()
-    st.pyplot(fig2)
-
-
-# ============================================================
-# TAB 3: SIGNIFICANT FACTORS (Permutation Importance)
-# ============================================================
-with tab3:
-    st.subheader("Significant Predictive Factors")
-
-    st.write(
-        "To meet the PPS objective (**identify significant factors**), this section uses "
-        "**Permutation Importance** (how much performance drops when a feature is shuffled). "
-        "This is model-agnostic and suitable for reports."
-    )
-
-    if not model_eval_ok:
-        st.warning("Model evaluation/importance is not available due to feature mismatch between the saved model and this dataset.")
-        st.info("If you're using best_pipe.pkl, retrain and export it with the same columns as this dashboard dataset.")
-    else:
-        # Fit (or refit) on train for clean importance calculation
-        # If loaded model is already trained, fit again is harmless for fallback; for a loaded model it may fail.
-        # So we handle safely.
-        try:
-            pipe.fit(X_tr, y_tr)
-        except Exception:
-            pass
-
-        imp_df = compute_permutation_importance(pipe, X_te, y_te, scoring="roc_auc", n_repeats=10)
-
-        top_k = st.slider("Top K features to display", 5, 25, 12, 1)
-        fig = fig_importance_bar(imp_df, top_k=top_k)
-        st.pyplot(fig)
-
-        st.markdown("### Top Factors Table")
-        st.dataframe(imp_df.head(top_k), use_container_width=True)
-
-        st.markdown("### Short interpretation (report-style)")
-        st.write(
-            "Features with higher permutation importance have a stronger influence on prediction performance. "
-            "In healthcare screening, these features are important because they explain which variables contribute most to risk estimation."
-        )
-
-
-# ============================================================
-# TAB 4: RELATIONSHIPS (EDA)
-# ============================================================
-with tab4:
-    st.subheader("Feature Relationships (EDA)")
-
-    st.write(
-        "This section shows relationships between key variables and diabetes status. "
-        "These visuals are what supervisors expect from a **Data Analyst**."
-    )
-
-    # Choose a few numeric & categorical columns automatically
-    numeric_cols = [c for c in df.columns if c != TARGET_COL and pd.api.types.is_numeric_dtype(df[c])]
-    cat_cols = [c for c in df.columns if c != TARGET_COL and not pd.api.types.is_numeric_dtype(df[c])]
-
-    st.markdown("### Numeric vs Diabetes (boxplots)")
-    num_show = [c for c in ["BMI (kg/m²)", "Waist circumference (cm)", "Systolic BP (mmHg)", "Diastolic BP (mmHg)"] if c in numeric_cols]
-    if not num_show:
-        st.info("No suitable numeric columns detected for boxplots.")
-    else:
-        grid = st.columns(2)
-        for i, col in enumerate(num_show):
-            fig = fig_box_by_target(df, col)
-            grid[i % 2].pyplot(fig)
-
-    st.markdown("### Categorical vs Diabetes (count comparisons)")
-    # Pick your key lifestyle variables if present, else sample from cat columns
-    preferred_cat = [
-        "Age", "Gender", "Occupation",
-        "Do you have a family history of diabetes?",
-        "How often do you exercise per week?",
-        "How would you describe your diet?",
-        "Average sleep hours per night",
-        "Have you ever been diagnosed with high blood pressure or cholesterol?",
+def metric_row(y_true, proba, pred):
+    return {
+        "ROC-AUC": roc_auc_score(y_true, proba),
+        "Accuracy": accuracy_score(y_true, pred),
+        "Precision": precision_score(y_true, pred, zero_division=0),
+        "Recall": recall_score(y_true, pred, zero_division=0),
+        "F1": f1_score(y_true, pred, zero_division=0),
+    }
+
+
+def make_pdf_leaflet(name, prob, label, tips):
+    pdf = FPDF()
+    pdf.add_page()
+    pdf.set_auto_page_break(auto=True, margin=15)
+
+    pdf.set_font("Helvetica", "B", 16)
+    pdf.cell(0, 10, "Type 2 Diabetes - Awareness Leaflet (Sri Lanka)", ln=True)
+
+    pdf.set_font("Helvetica", "", 10)
+    pdf.cell(0, 8, f"Generated: {datetime.now().strftime('%Y-%m-%d %H:%M')}", ln=True)
+    pdf.ln(2)
+
+    pdf.set_font("Helvetica", "B", 12)
+    pdf.cell(0, 8, "Summary", ln=True)
+    pdf.set_font("Helvetica", "", 11)
+    pdf.multi_cell(0, 7, f"Name: {name if name else 'N/A'}")
+    pdf.multi_cell(0, 7, f"Screening result: {label}")
+    if prob is not None:
+        pdf.multi_cell(0, 7, f"Estimated probability: {prob:.2f}")
+    pdf.ln(2)
+
+    pdf.set_font("Helvetica", "B", 12)
+    pdf.cell(0, 8, "Quick Awareness", ln=True)
+    pdf.set_font("Helvetica", "", 10)
+    bullets = [
+        "Type 2 diabetes happens when the body becomes resistant to insulin.",
+        "High blood sugar over time can damage heart, kidneys, eyes and nerves.",
+        "Early screening + lifestyle changes can reduce complications."
+    ]
+    for b in bullets:
+        pdf.multi_cell(0, 6, f"- {b}")
+    pdf.ln(2)
+
+    pdf.set_font("Helvetica", "B", 12)
+    pdf.cell(0, 8, "Personal Tips (Sri Lanka-friendly)", ln=True)
+    pdf.set_font("Helvetica", "", 10)
+    tips = tips or []
+    for t in tips[:14]:
+        pdf.multi_cell(0, 6, f"• {t}")
+
+    pdf.ln(2)
+    pdf.set_font("Helvetica", "I", 9)
+    pdf.multi_cell(0, 6, "Disclaimer: Educational screening only. Not a medical diagnosis.")
+
+    out = io.BytesIO()
+    pdf.output(out)
+    return out.getvalue()
+
+
+def explain_risk_rules(user_row: dict):
+    reasons = []
+
+    # waist / BMI / BP rules (simple clinical-style explanations)
+    bmi = user_row.get("BMI (kg/m²)")
+    if bmi is not None and isinstance(bmi, (int, float)) and bmi > 25:
+        reasons.append("BMI is above the healthy range (>25 kg/m²).")
+
+    waist = user_row.get("Waist circumference (cm)")
+    if waist is not None and isinstance(waist, (int, float)) and waist > 90:
+        reasons.append("Waist circumference is high (central obesity risk).")
+
+    sbp = user_row.get("Systolic BP (mmHg)")
+    dbp = user_row.get("Diastolic BP (mmHg)")
+    if sbp is not None and isinstance(sbp, (int, float)) and sbp >= 130:
+        reasons.append("Systolic BP is elevated (>=130 mmHg).")
+    if dbp is not None and isinstance(dbp, (int, float)) and dbp >= 85:
+        reasons.append("Diastolic BP is elevated (>=85 mmHg).")
+
+    if user_row.get("Do you have a family history of diabetes?") == "Yes":
+        reasons.append("Family history increases risk.")
+
+    if user_row.get("How often do you exercise per week?") in ["Never"]:
+        reasons.append("No weekly exercise reported (low physical activity).")
+
+    # symptoms
+    for sym in [
         "Do you experience frequent urination?",
         "Do you often feel unusually thirsty?",
         "Do you feel unusually fatigued or tired?",
-        "Do you have blurred vision or slow-healing wounds?"
-    ]
-    cat_show = [c for c in preferred_cat if c in cat_cols]
-    if len(cat_show) == 0:
-        cat_show = cat_cols[:6]
+        "Do you have blurred vision or slow-healing wounds?",
+    ]:
+        if user_row.get(sym) == "Yes":
+            reasons.append(f"Reported symptom: {sym}")
 
-    grid2 = st.columns(2)
-    for i, col in enumerate(cat_show[:8]):
-        fig = fig_cat_by_target(df, col)
-        grid2[i % 2].pyplot(fig)
+    if not reasons:
+        reasons.append("No strong risk signals detected from the entered inputs.")
+
+    return reasons
 
 
-# ============================================================
-# TAB 5: MODEL PERFORMANCE
-# ============================================================
-with tab5:
-    st.subheader("Model Performance (Evaluation)")
+# -----------------------------
+# SIDEBAR: DATA INPUT
+# -----------------------------
+st.sidebar.header("1) Data Source")
+uploaded = st.sidebar.file_uploader("Upload your Excel dataset (.xlsx)", type=["xlsx"])
 
-    if not model_eval_ok:
-        st.warning("Cannot evaluate model (feature mismatch). Use the fallback-trained model or retrain/export best_pipe.pkl using the same dataset columns.")
+use_sample = st.sidebar.checkbox("Use bundled sample (only if you committed the Excel to repo)", value=False)
+sample_path = "Diabetes Risk Survey (Responses) (1).xlsx"  # optional if you commit dataset (usually you won't)
+
+df_raw = None
+
+if uploaded is not None:
+    df_raw = load_excel(uploaded)
+elif use_sample:
+    try:
+        df_raw = load_excel(sample_path)
+    except Exception:
+        st.sidebar.error("Sample Excel not found in repo. Upload the dataset instead.")
+
+if df_raw is None:
+    st.info("Upload your dataset on the left sidebar to start.")
+    st.stop()
+
+df = clean_dataset(df_raw)
+
+st.sidebar.success(f"Loaded data: {df.shape[0]} rows × {df.shape[1]} columns")
+
+
+# -----------------------------
+# OPTIONAL: DROP LEAKAGE
+# -----------------------------
+st.sidebar.header("2) Leakage Control")
+drop_leakage = st.sidebar.checkbox("Drop leakage column (recommended)", value=True)
+drop_symptoms = st.sidebar.checkbox("Drop symptom questions (harder early-screening)", value=False)
+
+symptom_cols = [
+    "Do you experience frequent urination?",
+    "Do you often feel unusually thirsty?",
+    "Have you noticed unexplained weight loss or gain?",
+    "Do you feel unusually fatigued or tired?",
+    "Do you have blurred vision or slow-healing wounds?",
+]
+
+drop_cols = []
+if drop_leakage and LEAKAGE_COL in df.columns:
+    drop_cols.append(LEAKAGE_COL)
+if drop_symptoms:
+    drop_cols += [c for c in symptom_cols if c in df.columns]
+
+df_model = df.drop(columns=drop_cols, errors="ignore")
+
+# build X/y
+X = df_model.drop(columns=[TARGET_COL])
+y = df_model[TARGET_COL].astype(int)
+
+# Split
+X_train, X_test, y_train, y_test = train_test_split(
+    X, y, test_size=0.25, random_state=RANDOM_STATE, stratify=y
+)
+
+
+# -----------------------------
+# DASHBOARD TABS
+# -----------------------------
+tab_overview, tab_eda, tab_models, tab_explain, tab_awareness = st.tabs(
+    ["Overview", "EDA (Visual Analytics)", "Model Training & Comparison", "Significant Factors", "Awareness + Leaflet"]
+)
+
+
+# -----------------------------
+# TAB: OVERVIEW
+# -----------------------------
+with tab_overview:
+    st.subheader("Dataset Overview")
+    c1, c2, c3 = st.columns(3)
+
+    counts = y.value_counts().to_dict()
+    c1.metric("Total responses", df_model.shape[0])
+    c2.metric("Non-diabetes (0)", int(counts.get(0, 0)))
+    c3.metric("Diabetes (1)", int(counts.get(1, 0)))
+
+    st.write("**Features used (after drops):**")
+    st.code("\n".join(list(X.columns)), language="text")
+
+    st.write("**Dropped columns (leakage / optional):**")
+    st.code(", ".join(drop_cols) if drop_cols else "None", language="text")
+
+    st.write("Preview:")
+    st.dataframe(df_model.head(10), use_container_width=True)
+
+
+# -----------------------------
+# TAB: EDA
+# -----------------------------
+with tab_eda:
+    st.subheader("Exploratory Data Analysis")
+
+    # Class distribution
+    st.markdown("### Class Distribution")
+    fig = plt.figure()
+    cls = y.value_counts().sort_index()
+    plt.bar(["0 (No)", "1 (Yes)"], [cls.get(0, 0), cls.get(1, 0)])
+    plt.title("Class Distribution")
+    plt.ylabel("Count")
+    st.pyplot(fig)
+
+    # Missing values
+    st.markdown("### Missing Values (Top Columns)")
+    miss = df_model.isna().sum().sort_values(ascending=False)
+    miss = miss[miss > 0].head(15)
+    if len(miss) == 0:
+        st.success("No missing values detected.")
     else:
-        # Fit on train, evaluate on test
-        try:
-            pipe.fit(X_tr, y_tr)
-        except Exception:
-            pass
-
-        proba = pipe.predict_proba(X_te)[:, 1]
-        pred = (proba >= 0.5).astype(int)
-
-        acc = accuracy_score(y_te, pred)
-        prec = precision_score(y_te, pred, zero_division=0)
-        rec = recall_score(y_te, pred, zero_division=0)
-        f1 = f1_score(y_te, pred, zero_division=0)
-        auc = roc_auc_score(y_te, proba)
-
-        m1, m2, m3, m4, m5 = st.columns(5)
-        m1.metric("Accuracy", f"{acc:.3f}")
-        m2.metric("Precision", f"{prec:.3f}")
-        m3.metric("Recall", f"{rec:.3f}")
-        m4.metric("F1-score", f"{f1:.3f}")
-        m5.metric("ROC-AUC", f"{auc:.3f}")
-
-        st.markdown("### Confusion Matrix")
-        fig = plt.figure()
-        ConfusionMatrixDisplay.from_predictions(y_te, pred)
-        plt.title("Confusion Matrix")
-        plt.tight_layout()
-        st.pyplot(fig)
-
-        st.markdown("### ROC Curve")
         fig2 = plt.figure()
-        RocCurveDisplay.from_predictions(y_te, proba)
-        plt.title("ROC Curve")
+        plt.bar(miss.index.astype(str), miss.values)
+        plt.xticks(rotation=70, ha="right")
+        plt.title("Top Missing Columns")
         plt.tight_layout()
         st.pyplot(fig2)
 
-        st.markdown("### Notes (what to write in report)")
-        st.write(
-            "- Accuracy alone can be misleading with imbalanced classes.\n"
-            "- Recall is important because it measures how well the model detects diabetic cases.\n"
-            "- ROC-AUC summarizes discrimination ability across thresholds."
-        )
+    # Numeric distributions
+    st.markdown("### Numeric Distributions")
+    num_cols = X.select_dtypes(include=["number"]).columns.tolist()
+    pick = st.multiselect("Choose numeric columns to plot:", num_cols, default=num_cols[:3])
+    for col in pick:
+        fig3 = plt.figure()
+        plt.hist(df_model[col].dropna(), bins=20)
+        plt.title(f"Distribution: {col}")
+        plt.xlabel(col)
+        plt.ylabel("Frequency")
+        st.pyplot(fig3)
+
+    st.markdown("### Simple Correlation (Numeric only)")
+    if len(num_cols) >= 2:
+        corr = df_model[num_cols].corr(numeric_only=True)
+        fig4 = plt.figure()
+        plt.imshow(corr.values)
+        plt.xticks(range(len(corr.columns)), corr.columns, rotation=90)
+        plt.yticks(range(len(corr.index)), corr.index)
+        plt.colorbar()
+        plt.title("Correlation Heatmap")
+        plt.tight_layout()
+        st.pyplot(fig4)
+    else:
+        st.info("Not enough numeric columns for correlation heatmap.")
 
 
-# ============================================================
-# TAB 6: PREDICTION TOOL (supporting feature, not main)
-# ============================================================
-with tab6:
-    st.subheader("Risk Prediction (Supporting Tool)")
+# -----------------------------
+# TAB: MODELS
+# -----------------------------
+with tab_models:
+    st.subheader("Model Training & Comparison (SMOTE + Pipelines)")
 
     st.write(
-        "This form is included as a **supporting feature**. "
-        "Your main deliverable is the analytics dashboard (tabs 1–5)."
+        "This section trains several classifiers using a leakage-safe pipeline:\n"
+        "**Preprocess → SMOTE (train only) → Model**.\n\n"
+        "Tip: Don’t report only accuracy. Use ROC-AUC, Recall, and F1 as well."
     )
 
-    # Build form using the dataset's feature columns (excluding target)
-    X_cols = [c for c in df.columns if c != TARGET_COL]
-    leakage_col = "Are you currently taking any medications for diabetes or related conditions?"
-    if leakage_col in X_cols:
-        X_cols.remove(leakage_col)
+    # models
+    models = {
+        "Logistic Regression": LogisticRegression(max_iter=3000, class_weight="balanced", random_state=RANDOM_STATE),
+        "SVM (RBF)": SVC(kernel="rbf", probability=True, class_weight="balanced", random_state=RANDOM_STATE),
+        "Random Forest": RandomForestClassifier(n_estimators=400, class_weight="balanced", random_state=RANDOM_STATE, n_jobs=1),
+        "Extra Trees": ExtraTreesClassifier(n_estimators=600, class_weight="balanced", random_state=RANDOM_STATE, n_jobs=1),
+        "HistGradientBoosting": HistGradientBoostingClassifier(random_state=RANDOM_STATE),
+    }
 
-    # Split numeric vs categorical from the dataset
-    tmpX = df[X_cols].copy()
-    num_cols = tmpX.select_dtypes(include=["number"]).columns.tolist()
-    cat_cols = [c for c in tmpX.columns if c not in num_cols]
+    pre = build_preprocessor(X_train)
+    smote = SMOTE(sampling_strategy=0.9, k_neighbors=3, random_state=RANDOM_STATE)
 
-    user_row = {}
+    def make_pipe(m):
+        return ImbPipeline([
+            ("preprocess", pre),
+            ("smote", smote),
+            ("model", m)
+        ])
 
-    with st.form("predict_form"):
-        st.markdown("### Enter inputs")
+    if "trained" not in st.session_state:
+        st.session_state.trained = False
+    if "best_name" not in st.session_state:
+        st.session_state.best_name = None
+    if "best_pipe" not in st.session_state:
+        st.session_state.best_pipe = None
+    if "model_table" not in st.session_state:
+        st.session_state.model_table = None
 
-        # Basic numeric inputs (defaults)
-        for c in num_cols:
-            default_val = float(np.nanmedian(df[c].values)) if df[c].notna().any() else 0.0
-            user_row[c] = st.number_input(c, value=float(default_val))
+    if st.button("🚀 Train & Compare Models"):
+        rows = []
+        fitted = {}
 
-        # Categorical inputs from observed categories (keeps it consistent with training)
-        for c in cat_cols:
-            opts = [x for x in df[c].dropna().astype(str).unique().tolist()]
-            opts = sorted(opts) if opts else ["Unknown"]
-            user_row[c] = st.selectbox(c, opts)
+        for name, m in models.items():
+            pipe = make_pipe(m)
+            pipe.fit(X_train, y_train)
 
-        submit = st.form_submit_button("Predict risk")
+            proba = pipe.predict_proba(X_test)[:, 1]
+            pred = (proba >= 0.5).astype(int)
+            rows.append({"Model": name, **metric_row(y_test, proba, pred)})
+            fitted[name] = pipe
 
-    if submit:
-        X_in = pd.DataFrame([user_row])
-        try:
-            p = float(pipe.predict_proba(X_in)[:, 1][0])
-            level = risk_group(p, low_thr, high_thr)
+        table = pd.DataFrame(rows).sort_values("ROC-AUC", ascending=False).reset_index(drop=True)
+        st.session_state.model_table = table
 
-            st.markdown("### Result")
-            st.write(f"Predicted probability: **{p:.2f}**")
-            if level == "High":
-                st.error(f"Risk level: **{level}**")
-            elif level == "Medium":
-                st.warning(f"Risk level: **{level}**")
+        best_name = table.loc[0, "Model"]
+        st.session_state.best_name = best_name
+        st.session_state.best_pipe = fitted[best_name]
+        st.session_state.trained = True
+
+    if st.session_state.model_table is not None:
+        st.markdown("### Results on Test Split (25%)")
+        st.dataframe(st.session_state.model_table.style.format({
+            "ROC-AUC": "{:.3f}",
+            "Accuracy": "{:.3f}",
+            "Precision": "{:.3f}",
+            "Recall": "{:.3f}",
+            "F1": "{:.3f}",
+        }), use_container_width=True)
+
+        st.success(f"Selected (best ROC-AUC): **{st.session_state.best_name}**")
+
+        # Confusion matrix for best
+        bp = st.session_state.best_pipe
+        proba = bp.predict_proba(X_test)[:, 1]
+        pred = (proba >= THRESHOLD).astype(int)
+        cm = confusion_matrix(y_test, pred)
+
+        st.markdown(f"### Confusion Matrix (threshold = {THRESHOLD:.2f})")
+        fig = plt.figure()
+        plt.imshow(cm)
+        plt.title("Confusion Matrix")
+        plt.xticks([0, 1], ["No (0)", "Yes (1)"])
+        plt.yticks([0, 1], ["No (0)", "Yes (1)"])
+        for (i, j), v in np.ndenumerate(cm):
+            plt.text(j, i, str(v), ha="center", va="center")
+        plt.colorbar()
+        plt.tight_layout()
+        st.pyplot(fig)
+
+    st.divider()
+    st.markdown("### Individual Risk Prediction (uses selected best model)")
+    if not st.session_state.trained:
+        st.info("Train the models first.")
+    else:
+        # Build input form from dataset categories
+        user_row = {}
+        for col in X.columns:
+            if col in ["Waist circumference (cm)", "Systolic BP (mmHg)", "Diastolic BP (mmHg)", "BMI (kg/m²)"]:
+                user_row[col] = st.number_input(col, value=float(df_model[col].median(skipna=True) if col in df_model.columns else 0.0))
             else:
-                st.success(f"Risk level: **{level}**")
+                options = sorted(df_model[col].dropna().astype(str).unique().tolist())
+                # keep small lists reasonable
+                if len(options) == 0:
+                    user_row[col] = st.text_input(col, "")
+                else:
+                    user_row[col] = st.selectbox(col, options)
 
-            st.caption("Disclaimer: Educational screening tool only. Not a medical diagnosis.")
+        if st.button("Predict risk"):
+            X_input = pd.DataFrame([user_row])
+            prob = float(st.session_state.best_pipe.predict_proba(X_input)[:, 1][0])
+            st.session_state.last_prob = prob
+            st.session_state.last_input = user_row
 
-        except Exception as e:
-            st.error("Prediction failed (model-feature mismatch).")
-            st.code(str(e))
-            st.info("If using best_pipe.pkl, retrain it using the same feature columns as the dataset used in this dashboard.")
+            if prob >= THRESHOLD:
+                st.error(f"Estimated probability: **{prob:.2f}** → Higher Risk (threshold={THRESHOLD:.2f})")
+            else:
+                st.success(f"Estimated probability: **{prob:.2f}** → Lower Risk (threshold={THRESHOLD:.2f})")
 
 
-st.divider()
-st.caption("⚠️ Disclaimer: Educational screening prototype only — not a medical diagnosis.")
+# -----------------------------
+# TAB: SIGNIFICANT FACTORS
+# -----------------------------
+with tab_explain:
+    st.subheader("Significant Predictive Factors (PPS-aligned)")
+
+    if not st.session_state.get("trained", False):
+        st.info("Train models first (Model Training tab).")
+    else:
+        bp = st.session_state.best_pipe
+
+        colA, colB = st.columns(2)
+
+        with colA:
+            st.markdown("### Global importance (Permutation on test set)")
+            st.caption("This shows which features reduce ROC-AUC most when shuffled (model-agnostic).")
+
+            # permutation importance on pipeline (works, but can be a bit slow)
+            perm = permutation_importance(
+                bp, X_test, y_test,
+                n_repeats=10, random_state=RANDOM_STATE, scoring="roc_auc"
+            )
+
+            # feature names after preprocessing
+            try:
+                names = bp.named_steps["preprocess"].get_feature_names_out()
+            except Exception:
+                names = np.array([f"feature_{i}" for i in range(len(perm.importances_mean))])
+
+            imp = pd.DataFrame({
+                "Feature": names,
+                "Importance": perm.importances_mean
+            }).sort_values("Importance", ascending=False).head(15)
+
+            fig = plt.figure()
+            plt.barh(imp["Feature"][::-1], imp["Importance"][::-1])
+            plt.title("Top 15 Permutation Importances")
+            plt.xlabel("ROC-AUC drop")
+            plt.tight_layout()
+            st.pyplot(fig)
+
+            st.dataframe(imp, use_container_width=True)
+
+        with colB:
+            st.markdown("### User-friendly explanation (rule-based)")
+            st.caption("If a user predicted risk, this explains *why* in simple clinical language.")
+
+            if "last_input" not in st.session_state:
+                st.info("Run a prediction first to get personalised reasons.")
+            else:
+                reasons = explain_risk_rules(st.session_state.last_input)
+                for r in reasons:
+                    st.write("•", r)
+
+        st.divider()
+        st.markdown("### Simple model-level explanation (Logistic Regression coefficients)")
+        st.caption("Helpful for report discussion: interpretable direction & strength (after preprocessing).")
+
+        # Train a quick LR baseline for interpretability
+        pre = build_preprocessor(X_train)
+        smote = SMOTE(sampling_strategy=0.9, k_neighbors=3, random_state=RANDOM_STATE)
+
+        lr_pipe = ImbPipeline([
+            ("preprocess", pre),
+            ("smote", smote),
+            ("model", LogisticRegression(max_iter=3000, class_weight="balanced", random_state=RANDOM_STATE))
+        ])
+        lr_pipe.fit(X_train, y_train)
+
+        coef = lr_pipe.named_steps["model"].coef_.ravel()
+        try:
+            feat_names = lr_pipe.named_steps["preprocess"].get_feature_names_out()
+        except Exception:
+            feat_names = np.array([f"feature_{i}" for i in range(len(coef))])
+
+        coef_df = pd.DataFrame({"Feature": feat_names, "AbsCoef": np.abs(coef), "Coef": coef})
+        coef_df = coef_df.sort_values("AbsCoef", ascending=False).head(15)
+
+        fig = plt.figure()
+        plt.barh(coef_df["Feature"][::-1], coef_df["Coef"][::-1])
+        plt.title("Top 15 Logistic Regression Coefficients")
+        plt.xlabel("Coefficient (direction matters)")
+        plt.tight_layout()
+        st.pyplot(fig)
+
+        st.dataframe(coef_df, use_container_width=True)
+
+
+# -----------------------------
+# TAB: AWARENESS + PDF
+# -----------------------------
+with tab_awareness:
+    st.subheader("Awareness Quiz + PDF Leaflet")
+    st.write("Answer the questions. You’ll get Sri Lanka-friendly tips and can download a leaflet.")
+
+    name = st.text_input("Name (optional)", value=st.session_state.get("last_name", ""))
+    st.session_state["last_name"] = name
+
+    q1 = st.radio("1) Exercise at least 30 minutes?", ["Rarely", "1–2 days/week", "3–5 days/week", "Almost daily"])
+    q2 = st.radio("2) Sweet tea / sugary drinks per day?", ["0", "1", "2", "3 or more"])
+    q3 = st.radio("3) Rice portion size usually?", ["Small", "Medium", "Large"])
+    q4 = st.radio("4) Family history of diabetes?", ["No", "Yes"])
+    q5 = st.radio("5) Sleep most nights?", ["<6 hours", "6–7 hours", "7–8 hours", "8+ hours"])
+    q6 = st.radio("6) Fried foods frequency?", ["Rarely", "1–2/week", "3–4/week", "Almost daily"])
+    q7 = st.radio("7) Fruits & vegetables per day?", ["<2 portions", "2–3", "4–5", "More than 5"])
+    q8 = st.radio("8) Alcohol consumption?", ["No", "Occasionally", "Weekly", "Daily"])
+    q9 = st.radio("9) Smoking?", ["No", "Yes"])
+    q10 = st.radio("10) Stress level?", ["Low", "Moderate", "High"])
+    q11 = st.radio("11) Do you know HbA1c test?", ["No", "Yes"])
+    q12 = st.radio("12) Have you ever checked blood sugar?", ["Never", "Once a year", "Sometimes", "Regularly"])
+
+    if st.button("Get my tips"):
+        tips = []
+
+        if q1 in ["Rarely", "1–2 days/week"]:
+            tips.append("Try a 30-minute walk after dinner at least 5 days/week.")
+            tips.append("If busy: 10 minutes walking × 3 times/day.")
+
+        if q2 in ["2", "3 or more"]:
+            tips.append("Reduce sweet tea/soft drinks gradually (half sugar → quarter → none).")
+            tips.append("Replace with water or unsweetened tea.")
+
+        if q3 == "Large":
+            tips.append("Reduce rice portion; increase vegetables (gotukola, mukunuwenna, beans, cabbage).")
+
+        if q4 == "Yes":
+            tips.append("Family history increases risk: consider regular screening (FBS/HbA1c).")
+
+        if q5 == "<6 hours":
+            tips.append("Aim for 7–8 hours sleep — poor sleep can worsen insulin resistance.")
+
+        if q6 in ["3–4/week", "Almost daily"]:
+            tips.append("Limit fried foods; prefer boiled/steamed/grilled meals.")
+
+        if q7 in ["<2 portions", "2–3"]:
+            tips.append("Increase fibre: add vegetables + fruit (portion control).")
+
+        if q8 in ["Weekly", "Daily"]:
+            tips.append("Reduce alcohol frequency; alcohol can affect weight and blood sugar control.")
+
+        if q9 == "Yes":
+            tips.append("Avoid smoking — it increases cardiovascular risk in diabetes.")
+
+        if q10 == "High":
+            tips.append("Stress management helps: breathing exercises, walking, prayer/meditation.")
+
+        if q11 == "No":
+            tips.append("Learn HbA1c: it estimates average blood sugar for ~3 months.")
+
+        if q12 in ["Never", "Once a year"]:
+            tips.append("If you have risk factors, check fasting blood sugar / HbA1c more regularly.")
+
+        tips.append("Choose protein/fibre snacks: roasted gram (kadala), plain yogurt, nuts (small portion).")
+
+        st.session_state["last_tips"] = tips
+
+        st.markdown("### Your tips")
+        for t in tips:
+            st.write("•", t)
+
+    st.divider()
+
+    st.markdown("### Download PDF leaflet")
+    prob = st.session_state.get("last_prob", None)
+    label = "N/A"
+    if prob is not None:
+        label = "Higher Risk" if prob >= THRESHOLD else "Lower Risk"
+
+    tips = st.session_state.get("last_tips", [])
+    if st.button("⚠️ Generate PDF leaflet"):
+        pdf_bytes = make_pdf_leaflet(name=name, prob=prob, label=label, tips=tips)
+        st.download_button(
+            "⬇️ Download PDF leaflet",
+            data=pdf_bytes,
+            file_name="diabetes_awareness_leaflet.pdf",
+            mime="application/pdf"
+        )
+
+st.caption("⚠️ Disclaimer: Educational screening tool only. Not a medical diagnosis.")
