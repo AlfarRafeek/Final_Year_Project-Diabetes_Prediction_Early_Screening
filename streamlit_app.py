@@ -2,6 +2,9 @@
 # Run: streamlit run app.py
 # Requirements: streamlit, pandas, joblib, plotly, matplotlib
 
+best_model = joblib.load('model/best_model.joblib')
+preprocessor = joblib.load('model/preprocessor.joblib')
+
 # Install Streamlit if not already installed
 
 import streamlit as st
