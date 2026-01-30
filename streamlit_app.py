@@ -265,11 +265,26 @@ with tab_overview:
     for i, col in enumerate(show_nums[:4]):
         with cols[i % 2]:
             fig = plt.figure()
-            plt.hist(df_model[col].dropna(), bins=20)
-            plt.title(f"Distribution: {col}")
-            plt.xlabel(col)
-            plt.ylabel("Frequency")
-            st.pyplot(fig)
+
+series = df_model[col].dropna()
+
+# Check if column is truly numeric
+if pd.api.types.is_numeric_dtype(series):
+    plt.hist(series, bins=20)
+    plt.xlabel(col)
+    plt.ylabel("Frequency")
+    plt.title(f"Distribution of {col}")
+else:
+    # categorical → bar chart
+    counts = series.value_counts()
+    plt.bar(counts.index.astype(str), counts.values)
+    plt.xticks(rotation=45, ha="right")
+    plt.ylabel("Count")
+    plt.title(f"Distribution of {col}")
+
+plt.tight_layout()
+st.pyplot(fig)
+
 
     st.subheader("Correlation Heatmap (numeric only)")
     if len(num_cols) >= 2:
