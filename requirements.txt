@@ -1,9 +1,6 @@
 streamlit
 pandas
 numpy
-scikit-learn
-imbalanced-learn
 matplotlib
+scikit-learn
 openpyxl
-joblib
-reportlab
