@@ -113,6 +113,46 @@ def correlation_heatmap_numeric(df):
     plt.tight_layout()
     return fig
 
+def heatmap_from_pivot(piv: pd.DataFrame, title: str, xlabel: str, ylabel: str):
+    """Simple heatmap (matplotlib) from a pivot table of rates."""
+    fig = plt.figure()
+    arr = piv.values
+
+    plt.imshow(arr, aspect="auto")
+    plt.xticks(range(len(piv.columns)), piv.columns.astype(str), rotation=45, ha="right")
+    plt.yticks(range(len(piv.index)), piv.index.astype(str))
+    plt.colorbar(label="Diabetes rate")
+    plt.title(title)
+    plt.xlabel(xlabel)
+    plt.ylabel(ylabel)
+    plt.tight_layout()
+    return fig
+
+
+def stacked_rate_bar(df: pd.DataFrame, group_col: str, top_n=10):
+    """Stacked bar: proportion of diabetes/no diabetes per group."""
+    ct = pd.crosstab(df[group_col], df[TARGET_COL], normalize="index")
+    # keep only top groups by count to avoid very long charts
+    counts = df[group_col].astype(str).value_counts()
+    keep = counts.head(top_n).index
+    ct = ct.loc[ct.index.astype(str).isin(keep)]
+
+    p0 = ct.get(0, pd.Series([0]*len(ct), index=ct.index)).values
+    p1 = ct.get(1, pd.Series([0]*len(ct), index=ct.index)).values
+
+    fig = plt.figure()
+    x = np.arange(len(ct.index))
+    plt.bar(x, p0, label="No (0)")
+    plt.bar(x, p1, bottom=p0, label="Yes (1)")
+    plt.xticks(x, ct.index.astype(str), rotation=45, ha="right")
+    plt.ylim(0, 1)
+    plt.ylabel("Proportion")
+    plt.title(f"Diabetes proportion by {group_col} (top {top_n} groups)")
+    plt.legend()
+    plt.tight_layout()
+    return fig
+
+
 
 def mutual_info_importance(df, top_k=15):
     """
@@ -349,6 +389,104 @@ with tab2:
         else:
             st.info("No 'Yes' symptom responses found after filtering.")
 
+st.markdown("## Advanced visualisations")
+
+# -----------------------------------
+# A) Heatmap: Age × Gender diabetes rate
+# -----------------------------------
+if "Age" in df_f.columns and "Gender" in df_f.columns:
+    piv = df_f.pivot_table(
+        values=TARGET_COL,
+        index="Age",
+        columns="Gender",
+        aggfunc="mean"
+    )
+    st.pyplot(
+        heatmap_from_pivot(
+            piv,
+            title="Diabetes rate heatmap: Age × Gender",
+            xlabel="Gender",
+            ylabel="Age group"
+        )
+    )
+else:
+    st.info("Age × Gender heatmap needs both Age and Gender columns.")
+
+# -----------------------------------
+# B) Stacked proportion chart: pick a categorical column
+# -----------------------------------
+st.markdown("### Outcome breakdown by category (stacked proportions)")
+cat_candidates = [
+    c for c in df_f.columns
+    if c != TARGET_COL and not pd.api.types.is_numeric_dtype(df_f[c])
+]
+cat_candidates = [c for c in cat_candidates if df_f[c].notna().sum() > 0]
+
+if len(cat_candidates) > 0:
+    pick_cat = st.selectbox("Choose a categorical variable", cat_candidates, key="stack_pick")
+    st.pyplot(stacked_rate_bar(df_f, pick_cat, top_n=12))
+else:
+    st.info("No categorical columns available for stacked breakdown chart.")
+
+# -----------------------------------
+# C) Scatter matrix (numeric only)
+# -----------------------------------
+st.markdown("### Numeric relationship matrix (scatter matrix)")
+numeric_cols = [c for c in df_f.select_dtypes(include=["number"]).columns if c != TARGET_COL]
+numeric_cols = [c for c in numeric_cols if df_f[c].dropna().shape[0] > 5]
+
+if len(numeric_cols) >= 2:
+    chosen_cols = st.multiselect(
+        "Pick numeric columns (2–4 recommended)",
+        numeric_cols,
+        default=numeric_cols[:3],
+        key="scatter_matrix_cols"
+    )
+    chosen_cols = chosen_cols[:4]
+
+    if len(chosen_cols) >= 2:
+        fig = plt.figure()
+        pd.plotting.scatter_matrix(
+            df_f[chosen_cols].dropna(),
+            figsize=(7, 7),
+            diagonal="hist",
+            alpha=0.6
+        )
+        plt.suptitle("Scatter matrix (numeric features)", y=1.02)
+        plt.tight_layout()
+        st.pyplot(fig)
+else:
+    st.info("Not enough numeric columns for scatter matrix.")
+
+st.markdown("## Lift-style analysis (ranking by BMI as an example)")
+
+if "BMI (kg/m²)" in df_f.columns:
+    tmp = df_f[["BMI (kg/m²)", TARGET_COL]].dropna().copy()
+    if len(tmp) > 20:
+        tmp = tmp.sort_values("BMI (kg/m²)", ascending=False)
+        tmp["decile"] = pd.qcut(np.arange(len(tmp)), 10, labels=False)
+
+        lift = tmp.groupby("decile")[TARGET_COL].mean().sort_index(ascending=True)
+        overall = tmp[TARGET_COL].mean()
+
+        fig = plt.figure()
+        plt.plot(range(1, 11), lift.values, marker="o", label="Decile diabetes rate")
+        plt.axhline(overall, linestyle="--", label="Overall rate")
+        plt.xlabel("Decile (1 = highest BMI group)")
+        plt.ylabel("Diabetes rate")
+        plt.title("Lift-style view: Diabetes rate by BMI-ranked deciles")
+        plt.legend()
+        plt.tight_layout()
+        st.pyplot(fig)
+
+        st.caption("This is not a prediction model—just shows how risk concentrates when ranking by a factor.")
+    else:
+        st.info("Not enough BMI data for decile lift chart.")
+else:
+    st.info("BMI column not available for lift chart.")
+
+
+
 
 # ===========================
 # TAB 3: Significant factors
@@ -382,6 +520,47 @@ with tab3:
         file_name="cleaned_diabetes_survey_filtered.csv",
         mime="text/csv"
     )
+st.markdown("## Segment insights (which groups show highest diabetes rate?)")
+st.caption("This is useful for a Data Analytics dashboard: it shows which combinations of groups have higher observed diabetes rate.")
+
+segment_cols = [c for c in ["Age", "Gender", "How would you describe your diet?", "How often do you exercise per week?", "Average sleep hours per night"] if c in df_f.columns]
+if len(segment_cols) >= 2:
+    col1 = st.selectbox("Segment column 1", segment_cols, index=0, key="seg1")
+    col2 = st.selectbox("Segment column 2", segment_cols, index=1, key="seg2")
+    seg = (
+        df_f.groupby([col1, col2])[TARGET_COL]
+        .agg(["mean", "count"])
+        .reset_index()
+        .rename(columns={"mean": "Diabetes rate", "count": "N"})
+        .sort_values(["Diabetes rate", "N"], ascending=[False, False])
+    )
+    st.dataframe(seg.head(15), use_container_width=True)
+    st.info("Tip: Mention this in your report as 'segment-level insight' for stakeholders.")
+else:
+    st.info("Need at least two segment columns (Age/Gender/Diet/Exercise/Sleep etc.).")
+
+st.markdown("## Mutual Information grouped by original question")
+if mi_df is not None and not mi_df.empty:
+    base = mi_df.copy()
+
+    def base_name(f):
+        # convert one-hot names like "Gender_Male" -> "Gender"
+        if "_" in f:
+            return f.split("_")[0]
+        return f
+
+    base["question"] = base["feature"].astype(str).apply(base_name)
+    grouped = base.groupby("question")["mi"].sum().sort_values(ascending=False).reset_index()
+
+    fig = plt.figure()
+    plt.barh(grouped["question"][::-1], grouped["mi"][::-1])
+    plt.xlabel("Total MI (summed across categories)")
+    plt.title("Question-level importance (grouped MI)")
+    plt.tight_layout()
+    st.pyplot(fig)
+
+    st.dataframe(grouped.head(15), use_container_width=True)
+
 
 
 # ===========================
