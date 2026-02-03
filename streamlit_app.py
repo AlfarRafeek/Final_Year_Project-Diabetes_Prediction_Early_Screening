@@ -3,6 +3,11 @@ import pandas as pd
 import numpy as np
 import matplotlib.pyplot as plt
 
+from io import BytesIO
+from datetime import datetime
+from reportlab.lib.pagesizes import A4
+from reportlab.pdfgen import canvas
+
 from sklearn.feature_selection import mutual_info_classif
 from sklearn.preprocessing import OneHotEncoder
 
@@ -17,6 +22,7 @@ st.set_page_config(
 
 st.title("📊 Diabetes Risk Analytics Dashboard (Sri Lanka)")
 st.caption("Data analytics dashboard to visualize diabetes risk levels and significant predictive factors (PPS-aligned).")
+st.info("Educational analytics only — this tool does not provide a medical diagnosis.")
 
 
 # ---------------------------
@@ -30,14 +36,14 @@ DROP_COLS_IF_EXIST = ["Timestamp"]
 # Helpers
 # ---------------------------
 def safe_read_excel(uploaded_file):
-    """Read Excel safely (Streamlit Cloud needs openpyxl in requirements.txt)."""
+    """Read Excel safely. Streamlit Cloud needs openpyxl in requirements.txt."""
     return pd.read_excel(uploaded_file, engine="openpyxl")
 
 
 def clean_dataset(df: pd.DataFrame) -> pd.DataFrame:
-    """Basic cleaning consistent with your survey."""
+    """Light cleaning consistent with your Google Form survey."""
     df = df.copy()
-    df.columns = [c.strip() for c in df.columns]
+    df.columns = [str(c).strip() for c in df.columns]
 
     for c in DROP_COLS_IF_EXIST:
         if c in df.columns:
@@ -45,13 +51,11 @@ def clean_dataset(df: pd.DataFrame) -> pd.DataFrame:
 
     # Standardize target
     if TARGET_COL in df.columns:
-        df[TARGET_COL] = (
-            df[TARGET_COL].astype(str).str.strip().replace({"Yes": 1, "No": 0})
-        )
+        df[TARGET_COL] = df[TARGET_COL].astype(str).str.strip().replace({"Yes": 1, "No": 0})
         df = df.dropna(subset=[TARGET_COL])
         df[TARGET_COL] = df[TARGET_COL].astype(int)
 
-    # Convert true numeric columns (if any come as text)
+    # Convert numeric candidates (sometimes come as text)
     numeric_candidates = [
         "Waist circumference (cm)",
         "Systolic BP (mmHg)",
@@ -70,7 +74,7 @@ def is_numeric_series(s: pd.Series) -> bool:
 
 
 def plot_distribution(df, col, title_prefix="Distribution"):
-    """Histogram for numeric; bar chart for categorical."""
+    """Histogram for numeric columns; bar chart for categorical columns."""
     s = df[col].dropna()
 
     fig = plt.figure()
@@ -90,7 +94,7 @@ def plot_distribution(df, col, title_prefix="Distribution"):
 
 
 def diabetes_rate_by_group(df, group_col):
-    """Return diabetes rate table by any categorical column."""
+    """Observed diabetes rate by a grouping column."""
     temp = df[[group_col, TARGET_COL]].dropna()
     g = temp.groupby(group_col)[TARGET_COL].mean().sort_values(ascending=False)
     return g
@@ -113,12 +117,11 @@ def correlation_heatmap_numeric(df):
     plt.tight_layout()
     return fig
 
+
 def heatmap_from_pivot(piv: pd.DataFrame, title: str, xlabel: str, ylabel: str):
     """Simple heatmap (matplotlib) from a pivot table of rates."""
     fig = plt.figure()
-    arr = piv.values
-
-    plt.imshow(arr, aspect="auto")
+    plt.imshow(piv.values, aspect="auto")
     plt.xticks(range(len(piv.columns)), piv.columns.astype(str), rotation=45, ha="right")
     plt.yticks(range(len(piv.index)), piv.index.astype(str))
     plt.colorbar(label="Diabetes rate")
@@ -130,15 +133,16 @@ def heatmap_from_pivot(piv: pd.DataFrame, title: str, xlabel: str, ylabel: str):
 
 
 def stacked_rate_bar(df: pd.DataFrame, group_col: str, top_n=10):
-    """Stacked bar: proportion of diabetes/no diabetes per group."""
+    """Stacked bar showing proportions of (0/1) outcome inside each group."""
     ct = pd.crosstab(df[group_col], df[TARGET_COL], normalize="index")
-    # keep only top groups by count to avoid very long charts
+
+    # keep only top groups by count to avoid extremely long charts
     counts = df[group_col].astype(str).value_counts()
     keep = counts.head(top_n).index
     ct = ct.loc[ct.index.astype(str).isin(keep)]
 
-    p0 = ct.get(0, pd.Series([0]*len(ct), index=ct.index)).values
-    p1 = ct.get(1, pd.Series([0]*len(ct), index=ct.index)).values
+    p0 = ct.get(0, pd.Series([0] * len(ct), index=ct.index)).values
+    p1 = ct.get(1, pd.Series([0] * len(ct), index=ct.index)).values
 
     fig = plt.figure()
     x = np.arange(len(ct.index))
@@ -147,17 +151,16 @@ def stacked_rate_bar(df: pd.DataFrame, group_col: str, top_n=10):
     plt.xticks(x, ct.index.astype(str), rotation=45, ha="right")
     plt.ylim(0, 1)
     plt.ylabel("Proportion")
-    plt.title(f"Diabetes proportion by {group_col} (top {top_n} groups)")
+    plt.title(f"Outcome breakdown by {group_col} (top {top_n} groups)")
     plt.legend()
     plt.tight_layout()
     return fig
 
 
-
 def mutual_info_importance(df, top_k=15):
     """
-    Significant factors using Mutual Information (works for mixed types).
-    This is strong for a Data Analytics dashboard: highlights variables linked to diabetes.
+    Mutual Information for mixed survey data (categorical + numeric).
+    Useful for analytics dashboards: highlights which inputs are most associated with the outcome.
     """
     if TARGET_COL not in df.columns:
         return None
@@ -172,13 +175,13 @@ def mutual_info_importance(df, top_k=15):
     num_cols = X.select_dtypes(include=["number"]).columns.tolist()
     cat_cols = [c for c in X.columns if c not in num_cols]
 
-    # Fill missing
+    # Fill missing values
     for c in num_cols:
         X[c] = X[c].fillna(X[c].median())
     for c in cat_cols:
         X[c] = X[c].astype(str).fillna("Missing")
 
-    # OneHot for categoricals
+    # One-hot encode categoricals
     if len(cat_cols) > 0:
         ohe = OneHotEncoder(handle_unknown="ignore", sparse_output=False)
         X_cat = ohe.fit_transform(X[cat_cols])
@@ -188,7 +191,6 @@ def mutual_info_importance(df, top_k=15):
         cat_names = []
 
     X_num = X[num_cols].values if len(num_cols) > 0 else np.zeros((len(X), 0))
-
     X_all = np.hstack([X_num, X_cat])
     feature_names = list(num_cols) + list(cat_names)
 
@@ -200,17 +202,62 @@ def mutual_info_importance(df, top_k=15):
     return mi_df.head(top_k)
 
 
+def build_awareness_leaflet(summary_lines, tip_lines):
+    """Create a short PDF leaflet (educational use only)."""
+    buffer = BytesIO()
+    pdf = canvas.Canvas(buffer, pagesize=A4)
+    _, page_height = A4
+
+    y = page_height - 60
+    pdf.setFont("Helvetica-Bold", 16)
+    pdf.drawString(50, y, "Diabetes Awareness Leaflet (Sri Lanka)")
+    y -= 22
+
+    pdf.setFont("Helvetica", 10)
+    pdf.drawString(50, y, f"Generated on: {datetime.now().strftime('%Y-%m-%d %H:%M')}")
+    y -= 24
+
+    pdf.setFont("Helvetica-Bold", 12)
+    pdf.drawString(50, y, "Summary")
+    y -= 18
+    pdf.setFont("Helvetica", 10)
+
+    for line in summary_lines:
+        pdf.drawString(50, y, f"• {line}")
+        y -= 14
+
+    y -= 10
+    pdf.setFont("Helvetica-Bold", 12)
+    pdf.drawString(50, y, "Personal tips")
+    y -= 18
+    pdf.setFont("Helvetica", 10)
+
+    for tip in tip_lines[:16]:
+        if y < 80:
+            pdf.showPage()
+            y = page_height - 60
+            pdf.setFont("Helvetica", 10)
+        pdf.drawString(50, y, f"• {tip}")
+        y -= 14
+
+    y -= 10
+    pdf.setFont("Helvetica-Oblique", 9)
+    pdf.drawString(50, y, "Disclaimer: Educational analytics only — not a medical diagnosis.")
+    pdf.save()
+
+    buffer.seek(0)
+    return buffer.getvalue()
+
+
 # ---------------------------
 # Sidebar: data source
 # ---------------------------
 st.sidebar.header("Data Source")
-
 uploaded = st.sidebar.file_uploader("Upload your Excel survey file (.xlsx)", type=["xlsx"])
-
-st.sidebar.markdown("**Tip:** If Streamlit Cloud shows `openpyxl` error, add it to requirements.txt.")
+st.sidebar.caption("If Streamlit Cloud shows an openpyxl error, add openpyxl to requirements.txt.")
 
 if uploaded is None:
-    st.info("Upload your **Diabetes Risk Survey (Responses).xlsx** to start.")
+    st.info("Upload your **Diabetes Risk Survey (Responses).xlsx** to begin.")
     st.stop()
 
 
@@ -220,7 +267,7 @@ if uploaded is None:
 try:
     df_raw = safe_read_excel(uploaded)
 except Exception as e:
-    st.error("Could not read Excel. On Streamlit Cloud, you must have **openpyxl** installed.")
+    st.error("I couldn't read the Excel file. On Streamlit Cloud, you must have **openpyxl** installed.")
     st.code(str(e))
     st.stop()
 
@@ -263,17 +310,18 @@ k1, k2, k3, k4 = st.columns(4)
 k1.metric("Total responses", f"{total}")
 k2.metric("Diabetes (Yes)", f"{pos}")
 k3.metric("No Diabetes", f"{neg}")
-k4.metric("Diabetes rate", f"{rate*100:.1f}%")
+k4.metric("Diabetes rate", f"{rate * 100:.1f}%")
 
 
 # ---------------------------
 # Tabs (dashboard layout)
 # ---------------------------
-tab1, tab2, tab3, tab4 = st.tabs([
+tab1, tab2, tab3, tab4, tab5 = st.tabs([
     "Overview",
     "Risk patterns",
     "Significant factors",
-    "Data quality"
+    "Data quality",
+    "Awareness + Quiz"
 ])
 
 
@@ -289,16 +337,15 @@ with tab1:
         fig = plt.figure()
         counts = df_f[TARGET_COL].value_counts().sort_index()
         plt.bar(["No (0)", "Yes (1)"], [counts.get(0, 0), counts.get(1, 0)])
-        plt.title("Class Distribution (Diabetes target)")
+        plt.title("Class distribution (diabetes outcome)")
         plt.ylabel("Count")
         plt.tight_layout()
         st.pyplot(fig)
 
     with c2:
-        st.markdown("**Preview of filtered dataset**")
+        st.markdown("**Preview of the filtered dataset**")
         st.dataframe(df_f.head(20), use_container_width=True)
 
-    # Distributions (auto numeric/categorical)
     st.markdown("### Variable distributions (auto chart type)")
     cols_to_show = [c for c in df_f.columns if c != TARGET_COL]
     pick = st.multiselect("Choose variables to plot", cols_to_show, default=cols_to_show[:4])
@@ -308,7 +355,7 @@ with tab1:
 
 
 # ===========================
-# TAB 2: Risk patterns (PPS aligned)
+# TAB 2: Risk patterns (PPS aligned + advanced visuals)
 # ===========================
 with tab2:
     st.subheader("Risk patterns (risk levels + key variables)")
@@ -325,28 +372,29 @@ with tab2:
                 plt.xticks(rotation=45, ha="right")
                 plt.ylim(0, 1)
                 plt.ylabel("Diabetes rate")
-                plt.title(f"Diabetes rate by {group_col}")
+                plt.title(f"Observed diabetes rate by {group_col}")
                 plt.tight_layout()
                 st.pyplot(fig)
 
     # Numeric comparisons by class
     with right:
-        numeric_cols = [c for c in ["BMI (kg/m²)", "Waist circumference (cm)", "Systolic BP (mmHg)", "Diastolic BP (mmHg)"] if c in df_f.columns]
+        numeric_cols = [
+            c for c in ["BMI (kg/m²)", "Waist circumference (cm)", "Systolic BP (mmHg)", "Diastolic BP (mmHg)"]
+            if c in df_f.columns
+        ]
         if len(numeric_cols) == 0:
             st.info("No numeric columns found for BMI/Waist/BP comparisons.")
         else:
-            chosen = st.selectbox("Numeric variable vs diabetes", numeric_cols)
+            chosen = st.selectbox("Numeric variable vs diabetes outcome", numeric_cols)
             fig = plt.figure()
-            # simple boxplot by class
             data0 = df_f[df_f[TARGET_COL] == 0][chosen].dropna()
             data1 = df_f[df_f[TARGET_COL] == 1][chosen].dropna()
             plt.boxplot([data0, data1], labels=["No (0)", "Yes (1)"])
-            plt.title(f"{chosen} by Diabetes status")
+            plt.title(f"{chosen} by diabetes status")
             plt.ylabel(chosen)
             plt.tight_layout()
             st.pyplot(fig)
 
-    # Correlation heatmap numeric only
     st.markdown("### Correlation (numeric only)")
     fig_corr = correlation_heatmap_numeric(df_f)
     if fig_corr is None:
@@ -354,8 +402,7 @@ with tab2:
     else:
         st.pyplot(fig_corr)
 
-    # Symptom prevalence plot
-    st.markdown("### Symptom prevalence (Yes/No) vs Diabetes")
+    st.markdown("### Symptom prevalence (Yes/No) vs diabetes")
     symptom_cols = [
         "Do you experience frequent urination?",
         "Do you often feel unusually thirsty?",
@@ -368,7 +415,6 @@ with tab2:
     if len(symptom_cols) == 0:
         st.info("Symptom columns not found in the uploaded file.")
     else:
-        # rate of diabetes among those who answered Yes
         rows = []
         for c in symptom_cols:
             sub = df_f[df_f[c].astype(str).str.strip() == "Yes"]
@@ -382,110 +428,92 @@ with tab2:
             fig = plt.figure()
             plt.barh(sym_df["Symptom"][::-1], sym_df["Diabetes rate (Yes responders)"][::-1])
             plt.xlabel("Diabetes rate among 'Yes' answers")
-            plt.title("Symptoms associated with higher diabetes rate")
+            plt.title("Symptoms linked with higher observed diabetes rate")
             plt.tight_layout()
             st.pyplot(fig)
             st.dataframe(sym_df, use_container_width=True)
         else:
             st.info("No 'Yes' symptom responses found after filtering.")
 
-st.markdown("## Advanced visualisations")
+    # -----------------------------
+    # Advanced visualisations
+    # -----------------------------
+    st.markdown("## Advanced visualisations")
 
-# -----------------------------------
-# A) Heatmap: Age × Gender diabetes rate
-# -----------------------------------
-if "Age" in df_f.columns and "Gender" in df_f.columns:
-    piv = df_f.pivot_table(
-        values=TARGET_COL,
-        index="Age",
-        columns="Gender",
-        aggfunc="mean"
-    )
-    st.pyplot(
-        heatmap_from_pivot(
-            piv,
-            title="Diabetes rate heatmap: Age × Gender",
-            xlabel="Gender",
-            ylabel="Age group"
-        )
-    )
-else:
-    st.info("Age × Gender heatmap needs both Age and Gender columns.")
-
-# -----------------------------------
-# B) Stacked proportion chart: pick a categorical column
-# -----------------------------------
-st.markdown("### Outcome breakdown by category (stacked proportions)")
-cat_candidates = [
-    c for c in df_f.columns
-    if c != TARGET_COL and not pd.api.types.is_numeric_dtype(df_f[c])
-]
-cat_candidates = [c for c in cat_candidates if df_f[c].notna().sum() > 0]
-
-if len(cat_candidates) > 0:
-    pick_cat = st.selectbox("Choose a categorical variable", cat_candidates, key="stack_pick")
-    st.pyplot(stacked_rate_bar(df_f, pick_cat, top_n=12))
-else:
-    st.info("No categorical columns available for stacked breakdown chart.")
-
-# -----------------------------------
-# C) Scatter matrix (numeric only)
-# -----------------------------------
-st.markdown("### Numeric relationship matrix (scatter matrix)")
-numeric_cols = [c for c in df_f.select_dtypes(include=["number"]).columns if c != TARGET_COL]
-numeric_cols = [c for c in numeric_cols if df_f[c].dropna().shape[0] > 5]
-
-if len(numeric_cols) >= 2:
-    chosen_cols = st.multiselect(
-        "Pick numeric columns (2–4 recommended)",
-        numeric_cols,
-        default=numeric_cols[:3],
-        key="scatter_matrix_cols"
-    )
-    chosen_cols = chosen_cols[:4]
-
-    if len(chosen_cols) >= 2:
-        fig = plt.figure()
-        pd.plotting.scatter_matrix(
-            df_f[chosen_cols].dropna(),
-            figsize=(7, 7),
-            diagonal="hist",
-            alpha=0.6
-        )
-        plt.suptitle("Scatter matrix (numeric features)", y=1.02)
-        plt.tight_layout()
-        st.pyplot(fig)
-else:
-    st.info("Not enough numeric columns for scatter matrix.")
-
-st.markdown("## Lift-style analysis (ranking by BMI as an example)")
-
-if "BMI (kg/m²)" in df_f.columns:
-    tmp = df_f[["BMI (kg/m²)", TARGET_COL]].dropna().copy()
-    if len(tmp) > 20:
-        tmp = tmp.sort_values("BMI (kg/m²)", ascending=False)
-        tmp["decile"] = pd.qcut(np.arange(len(tmp)), 10, labels=False)
-
-        lift = tmp.groupby("decile")[TARGET_COL].mean().sort_index(ascending=True)
-        overall = tmp[TARGET_COL].mean()
-
-        fig = plt.figure()
-        plt.plot(range(1, 11), lift.values, marker="o", label="Decile diabetes rate")
-        plt.axhline(overall, linestyle="--", label="Overall rate")
-        plt.xlabel("Decile (1 = highest BMI group)")
-        plt.ylabel("Diabetes rate")
-        plt.title("Lift-style view: Diabetes rate by BMI-ranked deciles")
-        plt.legend()
-        plt.tight_layout()
-        st.pyplot(fig)
-
-        st.caption("This is not a prediction model—just shows how risk concentrates when ranking by a factor.")
+    # A) Heatmap: Age × Gender diabetes rate
+    if "Age" in df_f.columns and "Gender" in df_f.columns:
+        piv = df_f.pivot_table(values=TARGET_COL, index="Age", columns="Gender", aggfunc="mean")
+        st.pyplot(heatmap_from_pivot(piv, "Diabetes rate heatmap: Age × Gender", "Gender", "Age group"))
     else:
-        st.info("Not enough BMI data for decile lift chart.")
-else:
-    st.info("BMI column not available for lift chart.")
+        st.info("Age × Gender heatmap needs both Age and Gender columns.")
 
+    # B) Stacked proportion chart: choose categorical variable
+    st.markdown("### Outcome breakdown by category (stacked proportions)")
+    cat_candidates = [
+        c for c in df_f.columns
+        if c != TARGET_COL and not pd.api.types.is_numeric_dtype(df_f[c])
+    ]
+    cat_candidates = [c for c in cat_candidates if df_f[c].notna().sum() > 0]
 
+    if len(cat_candidates) > 0:
+        pick_cat = st.selectbox("Choose a categorical variable", cat_candidates, key="stack_pick")
+        st.pyplot(stacked_rate_bar(df_f, pick_cat, top_n=12))
+    else:
+        st.info("No categorical columns available for stacked breakdown chart.")
+
+    # C) Scatter matrix (numeric only)
+    st.markdown("### Numeric relationship matrix (scatter matrix)")
+    numeric_cols = [c for c in df_f.select_dtypes(include=["number"]).columns if c != TARGET_COL]
+    numeric_cols = [c for c in numeric_cols if df_f[c].dropna().shape[0] > 5]
+
+    if len(numeric_cols) >= 2:
+        chosen_cols = st.multiselect(
+            "Pick numeric columns (2–4 recommended)",
+            numeric_cols,
+            default=numeric_cols[:3],
+            key="scatter_matrix_cols"
+        )[:4]
+
+        if len(chosen_cols) >= 2:
+            fig = plt.figure()
+            pd.plotting.scatter_matrix(
+                df_f[chosen_cols].dropna(),
+                figsize=(7, 7),
+                diagonal="hist",
+                alpha=0.6
+            )
+            plt.suptitle("Scatter matrix (numeric features)", y=1.02)
+            plt.tight_layout()
+            st.pyplot(fig)
+    else:
+        st.info("Not enough numeric columns for scatter matrix.")
+
+    # D) Lift-style ranking (example using BMI)
+    st.markdown("## Lift-style analysis (ranking by BMI as an example)")
+    if "BMI (kg/m²)" in df_f.columns:
+        tmp = df_f[["BMI (kg/m²)", TARGET_COL]].dropna().copy()
+        if len(tmp) > 20:
+            tmp = tmp.sort_values("BMI (kg/m²)", ascending=False)
+            tmp["decile"] = pd.qcut(np.arange(len(tmp)), 10, labels=False)
+
+            lift = tmp.groupby("decile")[TARGET_COL].mean().sort_index(ascending=True)
+            overall = tmp[TARGET_COL].mean()
+
+            fig = plt.figure()
+            plt.plot(range(1, 11), lift.values, marker="o", label="Decile diabetes rate")
+            plt.axhline(overall, linestyle="--", label="Overall rate")
+            plt.xlabel("Decile (1 = highest BMI group)")
+            plt.ylabel("Diabetes rate")
+            plt.title("Lift-style view: Diabetes rate by BMI-ranked deciles")
+            plt.legend()
+            plt.tight_layout()
+            st.pyplot(fig)
+
+            st.caption("This is not a prediction model — it simply shows how risk concentrates when ranking by one factor.")
+        else:
+            st.info("Not enough BMI data for a decile lift chart.")
+    else:
+        st.info("BMI column not available for lift chart.")
 
 
 # ===========================
@@ -493,15 +521,16 @@ else:
 # ===========================
 with tab3:
     st.subheader("Significant predictive factors (data-driven)")
+
     st.write(
-        "This uses **Mutual Information** to estimate which variables are most associated with the diabetes outcome "
-        "(works with mixed categorical + numeric survey data)."
+        "This section uses **Mutual Information** to estimate which variables are most strongly associated with the "
+        "diabetes outcome in your survey data (works with both categorical and numeric inputs)."
     )
 
     mi_df = mutual_info_importance(df_f, top_k=15)
 
     if mi_df is None or mi_df.empty:
-        st.warning("Could not compute significant factors (check data after filtering).")
+        st.warning("I couldn't compute significant factors (check your filtered data).")
     else:
         fig = plt.figure()
         plt.barh(mi_df["feature"][::-1], mi_df["mi"][::-1])
@@ -512,7 +541,7 @@ with tab3:
 
         st.dataframe(mi_df, use_container_width=True)
 
-    st.markdown("### Download cleaned data (for appendix / evidence)")
+    st.markdown("### Download cleaned data (useful for appendix/evidence)")
     csv = df_f.to_csv(index=False).encode("utf-8")
     st.download_button(
         label="⬇️ Download cleaned filtered dataset (CSV)",
@@ -520,47 +549,47 @@ with tab3:
         file_name="cleaned_diabetes_survey_filtered.csv",
         mime="text/csv"
     )
-st.markdown("## Segment insights (which groups show highest diabetes rate?)")
-st.caption("This is useful for a Data Analytics dashboard: it shows which combinations of groups have higher observed diabetes rate.")
 
-segment_cols = [c for c in ["Age", "Gender", "How would you describe your diet?", "How often do you exercise per week?", "Average sleep hours per night"] if c in df_f.columns]
-if len(segment_cols) >= 2:
-    col1 = st.selectbox("Segment column 1", segment_cols, index=0, key="seg1")
-    col2 = st.selectbox("Segment column 2", segment_cols, index=1, key="seg2")
-    seg = (
-        df_f.groupby([col1, col2])[TARGET_COL]
-        .agg(["mean", "count"])
-        .reset_index()
-        .rename(columns={"mean": "Diabetes rate", "count": "N"})
-        .sort_values(["Diabetes rate", "N"], ascending=[False, False])
-    )
-    st.dataframe(seg.head(15), use_container_width=True)
-    st.info("Tip: Mention this in your report as 'segment-level insight' for stakeholders.")
-else:
-    st.info("Need at least two segment columns (Age/Gender/Diet/Exercise/Sleep etc.).")
+    st.markdown("## Segment insights (which groups show the highest observed rate?)")
+    st.caption("This is useful for stakeholder reporting: it highlights which combinations show higher observed diabetes rate.")
 
-st.markdown("## Mutual Information grouped by original question")
-if mi_df is not None and not mi_df.empty:
-    base = mi_df.copy()
+    segment_cols = [c for c in ["Age", "Gender", "How would you describe your diet?", "How often do you exercise per week?", "Average sleep hours per night"] if c in df_f.columns]
+    if len(segment_cols) >= 2:
+        col1 = st.selectbox("Segment column 1", segment_cols, index=0, key="seg1")
+        col2 = st.selectbox("Segment column 2", segment_cols, index=1, key="seg2")
 
-    def base_name(f):
-        # convert one-hot names like "Gender_Male" -> "Gender"
-        if "_" in f:
-            return f.split("_")[0]
-        return f
+        seg = (
+            df_f.groupby([col1, col2])[TARGET_COL]
+            .agg(["mean", "count"])
+            .reset_index()
+            .rename(columns={"mean": "Diabetes rate", "count": "N"})
+            .sort_values(["Diabetes rate", "N"], ascending=[False, False])
+        )
+        st.dataframe(seg.head(15), use_container_width=True)
+    else:
+        st.info("Need at least two segment columns (Age/Gender/Diet/Exercise/Sleep etc.).")
 
-    base["question"] = base["feature"].astype(str).apply(base_name)
-    grouped = base.groupby("question")["mi"].sum().sort_values(ascending=False).reset_index()
+    st.markdown("## Mutual Information grouped by original question")
+    if mi_df is not None and not mi_df.empty:
+        base = mi_df.copy()
 
-    fig = plt.figure()
-    plt.barh(grouped["question"][::-1], grouped["mi"][::-1])
-    plt.xlabel("Total MI (summed across categories)")
-    plt.title("Question-level importance (grouped MI)")
-    plt.tight_layout()
-    st.pyplot(fig)
+        def base_name(f):
+            # Convert one-hot names like "Gender_Male" -> "Gender"
+            if "_" in str(f):
+                return str(f).split("_")[0]
+            return str(f)
 
-    st.dataframe(grouped.head(15), use_container_width=True)
+        base["question"] = base["feature"].astype(str).apply(base_name)
+        grouped = base.groupby("question")["mi"].sum().sort_values(ascending=False).reset_index()
 
+        fig = plt.figure()
+        plt.barh(grouped["question"][::-1], grouped["mi"][::-1])
+        plt.xlabel("Total MI (summed across categories)")
+        plt.title("Question-level importance (grouped MI)")
+        plt.tight_layout()
+        st.pyplot(fig)
+
+        st.dataframe(grouped.head(15), use_container_width=True)
 
 
 # ===========================
@@ -569,15 +598,17 @@ if mi_df is not None and not mi_df.empty:
 with tab4:
     st.subheader("Data quality checks")
 
-    # Missing values
     missing = df_f.isna().sum().sort_values(ascending=False)
     missing = missing[missing > 0]
 
     if missing.empty:
-        st.success("No missing values detected in filtered dataset.")
+        st.success("No missing values detected in the filtered dataset.")
     else:
         st.write("Missing values by column:")
-        st.dataframe(missing.reset_index().rename(columns={"index": "Column", 0: "Missing"}), use_container_width=True)
+        st.dataframe(
+            missing.reset_index().rename(columns={"index": "Column", 0: "Missing"}),
+            use_container_width=True
+        )
 
         fig = plt.figure()
         top = missing.head(15)
@@ -588,69 +619,24 @@ with tab4:
         plt.tight_layout()
         st.pyplot(fig)
 
-    st.markdown("### Basic validation notes (for your report)")
+    st.markdown("### Notes you can copy into your report")
     st.info(
-        "• Categorical ranges (Age/Height/Weight/Sleep) should be visualized as bar charts, not histograms.\n"
-        "• Numeric measurements (BMI/BP/Waist) can be summarized using boxplots and correlation.\n"
-        "• Significant factors are computed from the survey itself (Mutual Information), supporting PPS dashboard goals."
+        "• Range-based survey questions (Age/Height/Weight/Sleep) are best shown with bar charts.\n"
+        "• Numeric measures (BMI/BP/Waist) are best summarised using boxplots and correlation.\n"
+        "• Significant factors here are computed directly from the survey dataset (Mutual Information), aligning with your PPS dashboard objective."
     )
+
 
 # ===========================
 # TAB 5: Awareness + Quiz
 # ===========================
-
-def build_awareness_leaflet(summary_lines, tip_lines):
-    """Creates a simple 1–2 page PDF leaflet (educational use only)."""
-    buffer = BytesIO()
-    pdf = canvas.Canvas(buffer, pagesize=A4)
-    page_width, page_height = A4
-
-    y = page_height - 60
-    pdf.setFont("Helvetica-Bold", 16)
-    pdf.drawString(50, y, "Diabetes Awareness Leaflet (Sri Lanka)")
-    y -= 22
-
-    pdf.setFont("Helvetica", 10)
-    pdf.drawString(50, y, f"Generated on: {datetime.now().strftime('%Y-%m-%d %H:%M')}")
-    y -= 24
-
-    pdf.setFont("Helvetica-Bold", 12)
-    pdf.drawString(50, y, "Summary")
-    y -= 18
-    pdf.setFont("Helvetica", 10)
-
-    for line in summary_lines:
-        pdf.drawString(50, y, f"• {line}")
-        y -= 14
-
-    y -= 10
-    pdf.setFont("Helvetica-Bold", 12)
-    pdf.drawString(50, y, "Personal tips")
-    y -= 18
-    pdf.setFont("Helvetica", 10)
-
-    for tip in tip_lines[:16]:
-        # Move to a new page if needed
-        if y < 80:
-            pdf.showPage()
-            y = page_height - 60
-            pdf.setFont("Helvetica", 10)
-
-        pdf.drawString(50, y, f"• {tip}")
-        y -= 14
-
-    y -= 10
-    pdf.setFont("Helvetica-Oblique", 9)
-    pdf.drawString(50, y, "Disclaimer: This is an educational tool only and not a medical diagnosis.")
-    pdf.save()
-
-    buffer.seek(0)
-    return buffer.getvalue()
-
-
 with tab5:
     st.subheader("🧠 Awareness Quiz & Prevention Tips")
     st.caption("Quick lifestyle check + practical advice. For awareness and academic use only.")
+
+    # Keep tips in session state so they remain available for PDF download after button clicks
+    if "awareness_tips" not in st.session_state:
+        st.session_state.awareness_tips = []
 
     st.markdown("### Short quiz")
 
@@ -667,10 +653,6 @@ with tab5:
     smoking = st.radio("11) Do you smoke?", ["No", "Yes"])
     late_meals = st.radio("12) Do you often eat heavy meals late at night?", ["No", "Yes"])
 
-    # keep tips in session_state so they remain available for PDF download
-    if "awareness_tips" not in st.session_state:
-        st.session_state.awareness_tips = []
-
     if st.button("Get my tips"):
         tips = []
 
@@ -681,7 +663,7 @@ with tab5:
         if rice_size == "Large":
             tips.append("Reduce rice portion size and increase vegetables for better balance.")
         if family_history == "Yes":
-            tips.append("Family history increases risk—consider regular screening (FBS/HbA1c) when appropriate.")
+            tips.append("Family history increases risk—consider regular screening (FBS/HbA1c) if advised.")
         if sleep in ["0–5 hours", "5–6 hours"]:
             tips.append("Aim for 7–8 hours of sleep; poor sleep is linked with higher metabolic risk.")
         if fried_food in ["3–4/week", "Almost daily"]:
@@ -698,8 +680,8 @@ with tab5:
             tips.append("Try to avoid heavy late dinners; a lighter earlier meal is usually better.")
 
         # General reminders (always shown)
-        tips.append("If blood pressure is high, reduce salt and follow medical guidance.")
-        tips.append("If you have concerning symptoms, consult a clinician for proper lab testing.")
+        tips.append("If blood pressure is elevated, reduce salt and follow medical guidance.")
+        tips.append("If symptoms are concerning or persistent, consult a clinician for proper lab testing.")
 
         st.session_state.awareness_tips = tips
 
@@ -711,18 +693,18 @@ with tab5:
     st.subheader("⬇️ Download leaflet (PDF)")
 
     person_name = st.text_input("Name (optional)", value="")
-    if st.button("Generate PDF"):
-        summary = [
+    if st.button("Generate PDF leaflet"):
+        summary_lines = [
             f"Name: {person_name if person_name else 'N/A'}",
             f"Filtered dataset size in dashboard: {len(df_f)}",
-            "This leaflet is based on the quiz answers (not a diagnosis)."
+            "This leaflet is based on quiz answers (not a diagnosis)."
         ]
 
         tips_for_pdf = st.session_state.awareness_tips
         if not tips_for_pdf:
             tips_for_pdf = ["Maintain a healthy diet, stay active, sleep well, and do regular screening if at risk."]
 
-        pdf_bytes = build_awareness_leaflet(summary_lines=summary, tip_lines=tips_for_pdf)
+        pdf_bytes = build_awareness_leaflet(summary_lines, tips_for_pdf)
 
         st.download_button(
             "⬇️ Download PDF leaflet",
@@ -731,3 +713,4 @@ with tab5:
             mime="application/pdf"
         )
 
+st.caption("© Academic prototype — built for final year project submission.")
