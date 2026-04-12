@@ -1,0 +1,272 @@
+Age,Gender,height_range,weight_range,family_history,exercise_freq,diet_type,diabetes_diagnosis,bp_cholesterol,frequent_urination,unusual_thirst,weight_change,fatigue,blurred_vision,Occupation,sleep_hours,waist_cm,systolic_bp,diastolic_bp,bmi,bmi_category,bp_category,frequent_urination_bin,unusual_thirst_bin,weight_change_bin,fatigue_bin,blurred_vision_bin,symptom_score,family_history_enc,bp_cholesterol_enc,frequent_urination_enc,unusual_thirst_enc,weight_change_enc,fatigue_enc,blurred_vision_enc,diabetes_diagnosis_enc,age_enc,height_enc,weight_enc,exercise_enc,sleep_enc,diet_enc,bmi_cat_enc,bp_cat_enc,gender_enc,occupation_enc
+20 - 29,Male,150 - 159 cm,60 - 69 kg,Yes,3 - 6 times,Mixed,No,No,Yes,No,No,Yes,No,Student,7-8 hours,81.28,120.0,80,25.3,Overweight,High Stage 1,1,0,0,1,0,2,1,0,1,0,0,1,0,0,1,2,3,2,4,1,2,2,1,2
+60 and above,Female,150 - 159 cm,70 - 79 kg,Yes,Never,Mixed,Yes,Yes,Yes,Yes,Yes,Yes,Yes,Unemployed,0-5 hours,86.36,140.0,80,33.3,Obese,High Stage 1,1,1,1,1,1,5,1,1,1,1,1,1,1,1,5,2,4,0,1,1,3,2,0,3
+50 - 59,Female,150 - 159 cm,50 - 59 kg,Yes,1 - 3 times,Mixed,Yes,Yes,Yes,No,No,No,Yes,Unemployed,0-5 hours,76.2,120.0,80,24.4,Normal,High Stage 1,1,0,0,0,1,2,1,1,1,0,0,0,1,1,4,2,2,1,1,1,1,2,0,3
+60 and above,Female,Below 150 cm,60 - 69 kg,Yes,Never,Mixed,Yes,Yes,No,No,Yes,Yes,Yes,Unemployed,7-8 hours,86.36,164.0,83,27.0,Overweight,High Stage 1,0,0,1,1,1,3,1,1,0,0,1,1,1,1,5,1,3,0,4,1,2,2,0,3
+50 - 59,Female,150 - 159 cm,50 - 59 kg,Yes,Never,Mostly healthy,No,Yes,Yes,Yes,Yes,Yes,Yes,Unemployed,0-5 hours,71.12,130.0,83,28.1,Overweight,High Stage 1,1,1,1,1,1,5,1,1,1,1,1,1,1,0,4,2,2,0,1,2,2,2,0,3
+60 and above,Female,150 - 159 cm,70 - 79 kg,No,Daily,Mixed,Yes,Yes,No,Yes,No,Yes,Yes,Unemployed,8 hours and above,76.2,130.0,80,32.0,Obese,High Stage 1,0,1,0,1,1,3,0,1,0,1,0,1,1,1,5,2,4,3,5,1,3,2,0,3
+50 - 59,Female,150 - 159 cm,50 - 59 kg,No,3 - 6 times,Mixed,Yes,Yes,Yes,Yes,No,No,Yes,Unemployed,0-5 hours,78.74,180.0,85,24.7,Normal,High Stage 1,1,1,0,0,1,3,0,1,1,1,0,0,1,1,4,2,2,2,1,1,1,2,0,3
+50 - 59,Female,150 - 159 cm,50 - 59 kg,No,Never,Mostly healthy,Yes,Yes,Yes,No,Yes,Yes,Yes,Unemployed,7-8 hours,86.36,120.0,80,29.9,Overweight,High Stage 1,1,0,1,1,1,4,0,1,1,0,1,1,1,1,4,2,2,0,4,2,2,2,0,3
+30 - 39,Male,160 - 169 cm,60 - 69 kg,Yes,1 - 3 times,Mixed,No,No,No,Yes,No,No,No,Employed,7-8 hours,76.2,120.0,80,24.2,Normal,High Stage 1,0,1,0,0,0,1,1,0,0,1,0,0,0,0,2,3,3,1,4,1,1,2,1,0
+60 and above,Male,170 - 179 cm,70 - 79 kg,Yes,1 - 3 times,Mixed,Yes,Yes,Yes,Yes,No,Yes,Yes,Employed,6-7 hours,81.28,130.0,80,25.0,Overweight,High Stage 1,1,1,0,1,1,4,1,1,1,1,0,1,1,1,5,4,4,1,3,1,2,2,1,0
+60 and above,Male,170 - 179 cm,60 - 69 kg,No,1 - 3 times,Mixed,No,Yes,No,Yes,No,Yes,Yes,Retired,8 hours and above,76.2,130.0,90,27.2,Overweight,High Stage 1,0,1,0,1,1,3,0,1,0,1,0,1,1,0,5,4,3,1,5,1,2,2,1,1
+50 - 59,Female,150 - 159 cm,70 - 79 kg,No,Never,Mixed,Yes,Yes,Yes,Yes,Yes,Yes,Yes,Unemployed,6-7 hours,96.52,130.0,90,32.1,Obese,High Stage 1,1,1,1,1,1,5,0,1,1,1,1,1,1,1,4,2,4,0,3,1,3,2,0,3
+50 - 59,Female,Below 150 cm,50 - 59 kg,Yes,Never,Mixed,Yes,Yes,Yes,No,No,No,Yes,Unemployed,5-6 hours,81.28,120.0,90,25.2,Overweight,High Stage 1,1,0,0,0,1,2,1,1,1,0,0,0,1,1,4,1,2,0,2,1,2,2,0,3
+40 - 49,Female,150 - 159 cm,60 - 69 kg,Yes,Never,Mixed,No,Yes,Yes,No,No,Yes,Yes,Unemployed,6-7 hours,86.36,120.0,80,28.1,Overweight,High Stage 1,1,0,0,1,1,3,1,1,1,0,0,1,1,0,3,2,3,0,3,1,2,2,0,3
+60 and above,Female,150 - 159 cm,70 - 79 kg,Yes,Never,Mixed,Yes,No,No,No,No,No,Yes,Unemployed,7-8 hours,86.36,120.0,80,32.0,Obese,High Stage 1,0,0,0,0,1,1,1,0,0,0,0,0,1,1,5,2,4,0,4,1,3,2,0,3
+30 - 39,Male,150 - 159 cm,50 - 59 kg,Yes,1 - 3 times,Mixed,No,No,Yes,Yes,No,Yes,No,Employed,6-7 hours,76.2,124.0,62,26.0,Overweight,Elevated,1,1,0,1,0,3,1,0,1,1,0,1,0,0,2,2,2,1,3,1,2,1,1,0
+50 - 59,Female,150 - 159 cm,60 - 69 kg,Yes,Never,Mixed,Yes,Yes,Yes,Yes,No,No,Yes,Unemployed,5-6 hours,91.0,120.0,80,26.3,Overweight,High Stage 1,1,1,0,0,1,3,1,1,1,1,0,0,1,1,4,2,3,0,2,1,2,2,0,3
+40 - 49,Male,160 - 169 cm,60 - 69 kg,Yes,1 - 3 times,Mixed,Yes,No,Yes,Yes,No,Yes,No,Employed,6-7 hours,91.0,125.0,70,25.0,Overweight,Elevated,1,1,0,1,0,3,1,0,1,1,0,1,0,1,3,3,3,1,3,1,2,1,1,0
+20 - 29,Female,150 - 159 cm,50 - 59 kg,Yes,Never,Mixed,No,No,No,No,No,No,No,Student,5-6 hours,81.0,120.0,80,22.9,Normal,High Stage 1,0,0,0,0,0,0,1,0,0,0,0,0,0,0,1,2,2,0,2,1,1,2,0,2
+30 - 39,Male,160 - 169 cm,70 - 79 kg,No,Never,Mostly unhealthy,No,Yes,Yes,Yes,Yes,Yes,Yes,Employed,8 hours and above,97.0,124.0,70,27.6,Overweight,Elevated,1,1,1,1,1,5,0,1,1,1,1,1,1,0,2,3,4,0,5,0,2,1,1,0
+40 - 49,Male,170 - 179 cm,70 - 79 kg,Yes,1 - 3 times,Mixed,Yes,Yes,No,Yes,Yes,Yes,No,Employed,5-6 hours,99.0,110.0,79,24.7,Normal,Normal,0,1,1,1,0,3,1,1,0,1,1,1,0,1,3,4,4,1,2,1,1,0,1,0
+60 and above,Female,Below 150 cm,50 - 59 kg,Yes,Never,Mixed,Yes,No,No,No,No,Yes,Yes,Unemployed,5-6 hours,94.0,119.0,85,25.7,Overweight,High Stage 1,0,0,0,1,1,2,1,0,0,0,0,1,1,1,5,1,2,0,2,1,2,2,0,3
+50 - 59,Male,160 - 169 cm,60 - 69 kg,Yes,Never,Mixed,No,No,No,No,No,Yes,Yes,Employed,0-5 hours,89.0,123.0,87,24.0,Normal,High Stage 1,0,0,0,1,1,2,1,0,0,0,0,1,1,0,4,3,3,0,1,1,1,2,1,0
+60 and above,Female,150 - 159 cm,Below 50 kg,Yes,Never,Mixed,Yes,No,No,No,No,Yes,Yes,Unemployed,0-5 hours,79.0,117.0,83,22.8,Normal,High Stage 1,0,0,0,1,1,2,1,0,0,0,0,1,1,1,5,2,1,0,1,1,1,2,0,3
+20 - 29,Male,150 - 159 cm,60 - 69 kg,No,Never,Mixed,No,No,No,Yes,Yes,Yes,No,Student,7-8 hours,89.0,120.0,80,17.5,Underweight,High Stage 1,0,1,1,1,0,3,0,0,0,1,1,1,0,0,1,2,3,0,4,1,0,2,1,2
+40 - 49,Female,150 - 159 cm,70 - 79 kg,Yes,Never,Mixed,Yes,Yes,No,No,No,Yes,Yes,Unemployed,5-6 hours,91.0,146.0,99,29.2,Overweight,High Stage 2,0,0,0,1,1,2,1,1,0,0,0,1,1,1,3,2,4,0,2,1,2,3,0,3
+50 - 59,Male,160 - 169 cm,60 - 69 kg,No,Never,Mixed,No,No,No,No,No,No,No,Employed,6-7 hours,86.0,120.0,80,22.3,Normal,High Stage 1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,4,3,3,0,3,1,1,2,1,0
+30 - 39,Male,170 - 179 cm,70 - 79 kg,Yes,Daily,Mostly healthy,No,No,No,No,No,No,No,Employed,6-7 hours,91.0,120.0,80,24.6,Normal,High Stage 1,0,0,0,0,0,0,1,0,0,0,0,0,0,0,2,4,4,3,3,2,1,2,1,0
+60 and above,Female,150 - 159 cm,50 - 59 kg,Yes,Never,Mixed,Yes,Yes,Yes,Yes,No,No,Yes,Unemployed,0-5 hours,94.0,152.0,97,22.7,Normal,High Stage 2,1,1,0,0,1,3,1,1,1,1,0,0,1,1,5,2,2,0,1,1,1,3,0,3
+30 - 39,Female,160 - 169 cm,60 - 69 kg,Yes,Never,Mixed,No,No,No,No,No,No,No,Unemployed,5-6 hours,91.0,117.0,80,29.5,Overweight,High Stage 1,0,0,0,0,0,0,1,0,0,0,0,0,0,0,2,3,3,0,2,1,2,2,0,3
+50 - 59,Female,150 - 159 cm,60 - 69 kg,Yes,Never,Mixed,Yes,Yes,No,Yes,No,Yes,Yes,Unemployed,0-5 hours,94.0,115.0,82,26.8,Overweight,High Stage 1,0,1,0,1,1,3,1,1,0,1,0,1,1,1,4,2,3,0,1,1,2,2,0,3
+20 - 29,Male,170 - 179 cm,70 - 79 kg,Yes,3 - 6 times,Mixed,No,No,No,No,No,No,No,Student,6-7 hours,81.0,120.0,80,23.9,Normal,High Stage 1,0,0,0,0,0,0,1,0,0,0,0,0,0,0,1,4,4,2,3,1,1,2,1,2
+60 and above,Female,150 - 159 cm,50 - 59 kg,Yes,Never,Mixed,Yes,No,No,No,No,Yes,Yes,Unemployed,0-5 hours,91.0,115.0,82,22.9,Normal,High Stage 1,0,0,0,1,1,2,1,0,0,0,0,1,1,1,5,2,2,0,1,1,1,2,0,3
+40 - 49,Female,150 - 159 cm,60 - 69 kg,Yes,Never,Mixed,Yes,Yes,Yes,Yes,No,Yes,Yes,Unemployed,0-5 hours,89.0,109.0,78,26.1,Overweight,Normal,1,1,0,1,1,4,1,1,1,1,0,1,1,1,3,2,3,0,1,1,2,0,0,3
+50 - 59,Male,170 - 179 cm,70 - 79 kg,Yes,1 - 3 times,Mixed,Yes,Yes,No,Yes,No,No,Yes,Employed,5-6 hours,86.0,129.0,91,23.7,Normal,High Stage 1,0,1,0,0,1,2,1,1,0,1,0,0,1,1,4,4,4,1,2,1,1,2,1,0
+30 - 39,Female,160 - 169 cm,80 and above,Yes,1 - 3 times,Mixed,No,No,Yes,No,No,No,No,Unemployed,5-6 hours,103.0,120.0,80,30.5,Obese,High Stage 1,1,0,0,0,0,1,1,0,1,0,0,0,0,0,2,3,5,1,2,1,3,2,0,3
+40 - 49,Male,170 - 179 cm,80 and above,Yes,1 - 3 times,Mixed,No,Yes,No,No,No,No,No,Employed,5-6 hours,91.0,130.0,80,27.0,Overweight,High Stage 1,0,0,0,0,0,0,1,1,0,0,0,0,0,0,3,4,5,1,2,1,2,2,1,0
+20 - 29,Male,180 cm and above,60 - 69 kg,Yes,3 - 6 times,Mixed,No,No,No,No,No,No,No,Employed,6-7 hours,91.0,121.0,86,20.1,Normal,High Stage 1,0,0,0,0,0,0,1,0,0,0,0,0,0,0,1,5,3,2,3,1,1,2,1,0
+60 and above,Male,170 - 179 cm,70 - 79 kg,Yes,Never,Mixed,Yes,Yes,No,No,Yes,Yes,Yes,Employed,0-5 hours,91.0,144.0,97,22.7,Normal,High Stage 2,0,0,1,1,1,3,1,1,0,0,1,1,1,1,5,4,4,0,1,1,1,3,1,0
+40 - 49,Female,150 - 159 cm,50 - 59 kg,Yes,Never,Mixed,No,No,No,No,No,No,No,Unemployed,0-5 hours,89.0,129.5,120,22.9,Normal,High Stage 1,0,0,0,0,0,0,1,0,0,0,0,0,0,0,3,2,2,0,1,1,1,2,0,3
+40 - 49,Female,150 - 159 cm,80 and above,Yes,Never,Mixed,Yes,No,No,No,No,No,Yes,Unemployed,5-6 hours,96.0,120.0,80,35.4,Obese,High Stage 1,0,0,0,0,1,1,1,0,0,0,0,0,1,1,3,2,5,0,2,1,3,2,0,3
+30 - 39,Male,180 cm and above,70 - 79 kg,Yes,1 - 3 times,Mixed,No,Yes,No,No,No,Yes,No,Employed,5-6 hours,91.0,139.0,99,22.9,Normal,High Stage 1,0,0,0,1,0,1,1,1,0,0,0,1,0,0,2,5,4,1,2,1,1,2,1,0
+60 and above,Female,150 - 159 cm,50 - 59 kg,Yes,Never,Mixed,Yes,Yes,Yes,Yes,Yes,Yes,Yes,Unemployed,5-6 hours,86.0,121.0,86,23.6,Normal,High Stage 1,1,1,1,1,1,5,1,1,1,1,1,1,1,1,5,2,2,0,2,1,1,2,0,3
+50 - 59,Male,160 - 169 cm,70 - 79 kg,Yes,Never,Mixed,No,No,No,No,No,No,No,Employed,0-5 hours,86.0,119.0,85,25.9,Overweight,High Stage 1,0,0,0,0,0,0,1,0,0,0,0,0,0,0,4,3,4,0,1,1,2,2,1,0
+30 - 39,Female,150 - 159 cm,70 - 79 kg,Yes,Never,Mixed,No,No,No,No,No,No,No,Unemployed,6-7 hours,91.0,123.0,87,30.8,Obese,High Stage 1,0,0,0,0,0,0,1,0,0,0,0,0,0,0,2,2,4,0,3,1,3,2,0,3
+40 - 49,Male,160 - 169 cm,60 - 69 kg,Yes,1 - 3 times,Mixed,Yes,No,No,Yes,No,No,Yes,Employed,6-7 hours,86.0,120.0,80,25.7,Overweight,High Stage 1,0,1,0,0,1,2,1,0,0,1,0,0,1,1,3,3,3,1,3,1,2,2,1,0
+50 - 59,Female,170 - 179 cm,70 - 79 kg,Yes,Never,Mixed,Yes,No,No,Yes,No,Yes,Yes,Unemployed,7-8 hours,89.0,120.0,80,23.3,Normal,High Stage 1,0,1,0,1,1,3,1,0,0,1,0,1,1,1,4,4,4,0,4,1,1,2,0,3
+60 and above,Male,170 - 179 cm,70 - 79 kg,Yes,Never,Mixed,Yes,Yes,No,No,No,Yes,Yes,Employed,0-5 hours,86.0,154.0,99,23.6,Normal,High Stage 2,0,0,0,1,1,2,1,1,0,0,0,1,1,1,5,4,4,0,1,1,1,3,1,0
+40 - 49,Female,160 - 169 cm,60 - 69 kg,Yes,Never,Mixed,Yes,No,No,No,No,No,Yes,Unemployed,5-6 hours,86.0,124.0,87,23.1,Normal,High Stage 1,0,0,0,0,1,1,1,0,0,0,0,0,1,1,3,3,3,0,2,1,1,2,0,3
+30 - 39,Male,170 - 179 cm,70 - 79 kg,Yes,1 - 3 times,Mixed,No,No,No,No,No,No,No,Employed,5-6 hours,86.0,120.0,80,22.6,Normal,High Stage 1,0,0,0,0,0,0,1,0,0,0,0,0,0,0,2,4,4,1,2,1,1,2,1,0
+50 - 59,Female,150 - 159 cm,50 - 59 kg,Yes,Never,Mixed,Yes,No,Yes,Yes,No,No,Yes,Employed,0-5 hours,84.0,120.0,80,24.9,Normal,High Stage 1,1,1,0,0,1,3,1,0,1,1,0,0,1,1,4,2,2,0,1,1,1,2,0,0
+50 - 59,Male,160 - 169 cm,60 - 69 kg,Yes,Never,Mixed,Yes,No,No,No,No,No,Yes,Employed,5-6 hours,84.0,128.0,76,23.1,Normal,Elevated,0,0,0,0,1,1,1,0,0,0,0,0,1,1,4,3,3,0,2,1,1,1,1,0
+60 and above,Female,160 - 169 cm,60 - 69 kg,Yes,Never,Mixed,Yes,Yes,No,No,No,Yes,Yes,Unemployed,0-5 hours,81.0,154.0,99,21.6,Normal,High Stage 2,0,0,0,1,1,2,1,1,0,0,0,1,1,1,5,3,3,0,1,1,1,3,0,3
+50 - 59,Female,150 - 159 cm,50 - 59 kg,Yes,Never,Mixed,Yes,No,Yes,Yes,No,No,No,Unemployed,0-5 hours,86.0,128.0,76,23.5,Normal,Elevated,1,1,0,0,0,2,1,0,1,1,0,0,0,1,4,2,2,0,1,1,1,1,0,3
+40 - 49,Male,170 - 179 cm,70 - 79 kg,No,Never,Mixed,Yes,No,No,No,No,No,No,Employed,0-5 hours,89.0,120.0,80,26.0,Overweight,High Stage 1,0,0,0,0,0,0,0,0,0,0,0,0,0,1,3,4,4,0,1,1,2,2,1,0
+50 - 59,Male,160 - 169 cm,80 and above,Yes,Never,Mixed,Yes,Yes,Yes,Yes,No,Yes,No,Employed,0-5 hours,99.0,154.0,99,32.6,Obese,High Stage 2,1,1,0,1,0,3,1,1,1,1,0,1,0,1,4,3,5,0,1,1,3,3,1,0
+40 - 49,Male,160 - 169 cm,60 - 69 kg,Yes,Never,Mixed,Yes,Yes,No,No,No,Yes,Yes,Employed,0-5 hours,86.0,138.0,88,22.3,Normal,High Stage 1,0,0,0,1,1,2,1,1,0,0,0,1,1,1,3,3,3,0,1,1,1,2,1,0
+30 - 39,Male,160 - 169 cm,50 - 59 kg,Yes,Never,Mixed,Yes,No,Yes,Yes,No,No,No,Employed,5-6 hours,84.0,120.0,80,21.7,Normal,High Stage 1,1,1,0,0,0,2,1,0,1,1,0,0,0,1,2,3,2,0,2,1,1,2,1,0
+60 and above,Male,160 - 169 cm,50 - 59 kg,No,Never,Mixed,Yes,Yes,No,No,No,No,Yes,Employed,0-5 hours,85.0,145.0,92,21.1,Normal,High Stage 2,0,0,0,0,1,1,0,1,0,0,0,0,1,1,5,3,2,0,1,1,1,3,1,0
+30 - 39,Male,170 - 179 cm,70 - 79 kg,No,1 - 3 times,Mixed,No,No,No,No,No,No,No,Employed,5-6 hours,94.0,120.0,80,25.6,Overweight,High Stage 1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,2,4,4,1,2,1,2,2,1,0
+30 - 39,Male,170 - 179 cm,60 - 69 kg,No,Never,Mixed,Yes,Yes,No,Yes,No,Yes,Yes,Employed,6-7 hours,86.0,140.0,90,22.3,Normal,High Stage 2,0,1,0,1,1,3,0,1,0,1,0,1,1,1,2,4,3,0,3,1,1,3,1,0
+50 - 59,Male,170 - 179 cm,80 and above,Yes,Never,Mixed,Yes,Yes,Yes,Yes,No,Yes,Yes,Employed,5-6 hours,104.0,150.0,95,29.7,Overweight,High Stage 2,1,1,0,1,1,4,1,1,1,1,0,1,1,1,4,4,5,0,2,1,2,3,1,0
+60 and above,Female,160 - 169 cm,50 - 59 kg,No,Never,Mixed,No,No,No,No,No,No,No,Unemployed,5-6 hours,84.0,132.0,85,21.6,Normal,High Stage 1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,5,3,2,0,2,1,1,2,0,3
+60 and above,Female,150 - 159 cm,50 - 59 kg,Yes,Never,Mixed,Yes,No,No,No,No,Yes,Yes,Unemployed,5-6 hours,89.0,155.0,88,23.4,Normal,High Stage 1,0,0,0,1,1,2,1,0,0,0,0,1,1,1,5,2,2,0,2,1,1,2,0,3
+60 and above,Female,160 - 169 cm,60 - 69 kg,No,Never,Mixed,Yes,No,No,No,No,No,No,Unemployed,6-7 hours,92.0,128.0,82,24.6,Normal,High Stage 1,0,0,0,0,0,0,0,0,0,0,0,0,0,1,5,3,3,0,3,1,1,2,0,3
+40 - 49,Male,170 - 179 cm,70 - 79 kg,Yes,Never,Mixed,Yes,Yes,Yes,Yes,No,No,No,Employed,5-6 hours,92.0,142.0,91,24.5,Normal,High Stage 2,1,1,0,0,0,2,1,1,1,1,0,0,0,1,3,4,4,0,2,1,1,3,1,0
+40 - 49,Female,150 - 159 cm,60 - 69 kg,No,Never,Mixed,Yes,No,No,No,No,Yes,No,Employed,6-7 hours,91.0,135.0,87,24.3,Normal,High Stage 1,0,0,0,1,0,1,0,0,0,0,0,1,0,1,3,2,3,0,3,1,1,2,0,0
+20 - 29,Male,170 - 179 cm,80 and above,Yes,1 - 3 times,Mixed,No,No,No,No,No,No,No,Employed,7-8 hours,99.0,120.0,80,27.4,Overweight,High Stage 1,0,0,0,0,0,0,1,0,0,0,0,0,0,0,1,4,5,1,4,1,2,2,1,0
+30 - 39,Male,160 - 169 cm,70 - 79 kg,Yes,Never,Mixed,Yes,No,Yes,Yes,No,No,No,Employed,6-7 hours,97.0,124.0,84,26.9,Overweight,High Stage 1,1,1,0,0,0,2,1,0,1,1,0,0,0,1,2,3,4,0,3,1,2,2,1,0
+60 and above,Female,160 - 169 cm,50 - 59 kg,No,Never,Mixed,Yes,Yes,Yes,Yes,No,Yes,No,Unemployed,6-7 hours,85.0,148.0,94,21.8,Normal,High Stage 2,1,1,0,1,0,3,0,1,1,1,0,1,0,1,5,3,2,0,3,1,1,3,0,3
+60 and above,Female,160 - 169 cm,50 - 59 kg,No,Never,Mixed,Yes,No,No,No,No,No,Yes,Unemployed,5-6 hours,83.0,139.0,89,21.1,Normal,High Stage 1,0,0,0,0,1,1,0,0,0,0,0,0,1,1,5,3,2,0,2,1,1,2,0,3
+60 and above,Female,160 - 169 cm,50 - 59 kg,No,Never,Mixed,Yes,Yes,No,Yes,No,Yes,Yes,Unemployed,5-6 hours,86.0,152.0,96,22.5,Normal,High Stage 2,0,1,0,1,1,3,0,1,0,1,0,1,1,1,5,3,2,0,2,1,1,3,0,3
+60 and above,Female,150 - 159 cm,50 - 59 kg,No,Never,Mixed,Yes,No,No,No,No,Yes,Yes,Unemployed,6-7 hours,87.0,120.0,80,22.7,Normal,High Stage 1,0,0,0,1,1,2,0,0,0,0,0,1,1,1,5,2,2,0,3,1,1,2,0,3
+40 - 49,Male,170 - 179 cm,70 - 79 kg,Yes,Never,Mixed,Yes,No,No,No,No,No,Yes,Employed,5-6 hours,92.0,128.0,84,25.0,Overweight,High Stage 1,0,0,0,0,1,1,1,0,0,0,0,0,1,1,3,4,4,0,2,1,2,2,1,0
+30 - 39,Female,160 - 169 cm,50 - 59 kg,Yes,1 - 3 times,Mixed,Yes,No,No,Yes,No,Yes,No,Employed,0-5 hours,82.0,118.0,78,22.7,Normal,Normal,0,1,0,1,0,2,1,0,0,1,0,1,0,1,2,3,2,1,1,1,1,0,0,0
+50 - 59,Male,160 - 169 cm,80 and above,No,Never,Mixed,Yes,Yes,No,Yes,Yes,Yes,No,Employed,5-6 hours,98.0,142.0,92,29.1,Overweight,High Stage 2,0,1,1,1,0,3,0,1,0,1,1,1,0,1,4,3,5,0,2,1,2,3,1,0
+20 - 29,Female,150 - 159 cm,50 - 59 kg,Yes,Never,Mixed,No,No,No,No,No,No,No,Student,8 hours and above,78.0,110.0,72,21.2,Normal,Normal,0,0,0,0,0,0,1,0,0,0,0,0,0,0,1,2,2,0,5,1,1,0,0,2
+60 and above,Male,170 - 179 cm,70 - 79 kg,Yes,Never,Mixed,Yes,Yes,No,No,No,Yes,Yes,Retired,5-6 hours,96.0,138.0,88,25.5,Overweight,High Stage 1,0,0,0,1,1,2,1,1,0,0,0,1,1,1,5,4,4,0,2,1,2,2,1,1
+40 - 49,Female,150 - 159 cm,60 - 69 kg,No,Never,Mixed,Yes,No,Yes,Yes,Yes,Yes,No,Employed,5-6 hours,88.0,130.0,85,26.4,Overweight,High Stage 1,1,1,1,1,0,4,0,0,1,1,1,1,0,1,3,2,3,0,2,1,2,2,0,0
+30 - 39,Male,170 - 179 cm,80 and above,Yes,1 - 3 times,Mixed,Yes,Yes,No,No,No,No,No,Employed,6-7 hours,102.0,145.0,94,29.4,Overweight,High Stage 2,0,0,0,0,0,0,1,1,0,0,0,0,0,1,2,4,5,1,3,1,2,3,1,0
+50 - 59,Female,160 - 169 cm,70 - 79 kg,Yes,Never,Mixed,Yes,Yes,No,Yes,No,Yes,Yes,Unemployed,5-6 hours,91.0,135.0,87,26.7,Overweight,High Stage 1,0,1,0,1,1,3,1,1,0,1,0,1,1,1,4,3,4,0,2,1,2,2,0,3
+20 - 29,Male,180 cm and above,70 - 79 kg,No,Never,Mixed,No,No,No,No,No,No,No,Employed,6-7 hours,89.0,122.0,80,23.8,Normal,High Stage 1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,5,4,0,3,1,1,2,1,0
+60 and above,Female,150 - 159 cm,50 - 59 kg,No,Never,Mixed,No,No,No,No,No,No,No,Unemployed,6-7 hours,84.0,148.0,90,21.9,Normal,High Stage 2,0,0,0,0,0,0,0,0,0,0,0,0,0,0,5,2,2,0,3,1,1,3,0,3
+40 - 49,Male,170 - 179 cm,80 and above,Yes,Never,Mixed,Yes,Yes,No,No,Yes,Yes,No,Employed,5-6 hours,106.0,152.0,96,30.3,Obese,High Stage 2,0,0,1,1,0,2,1,1,0,0,1,1,0,1,3,4,5,0,2,1,3,3,1,0
+30 - 39,Female,160 - 169 cm,60 - 69 kg,No,Never,Mixed,No,No,No,No,No,No,No,Employed,6-7 hours,85.0,115.0,75,23.1,Normal,Normal,0,0,0,0,0,0,0,0,0,0,0,0,0,0,2,3,3,0,3,1,1,0,0,0
+60 and above,Male,170 - 179 cm,80 and above,Yes,Never,Mixed,Yes,Yes,Yes,Yes,No,No,Yes,Unemployed,7-8 hours,101.0,140.0,91,30.1,Obese,High Stage 2,1,1,0,0,1,3,1,1,1,1,0,0,1,1,5,4,5,0,4,1,3,3,1,3
+20 - 29,Male,160 - 169 cm,50 - 59 kg,No,3 - 6 times,Mostly healthy,No,No,No,No,No,No,No,Student,6-7 hours,79.0,112.0,74,20.7,Normal,Normal,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,3,2,2,3,2,1,0,1,2
+40 - 49,Male,170 - 179 cm,70 - 79 kg,Yes,Never,Mixed,No,No,No,No,No,No,No,Employed,5-6 hours,90.0,132.0,86,25.7,Overweight,High Stage 1,0,0,0,0,0,0,1,0,0,0,0,0,0,0,3,4,4,0,2,1,2,2,1,0
+50 - 59,Female,150 - 159 cm,60 - 69 kg,No,Never,Mixed,Yes,No,No,No,No,Yes,No,Unemployed,6-7 hours,93.0,136.0,88,26.9,Overweight,High Stage 1,0,0,0,1,0,1,0,0,0,0,0,1,0,1,4,2,3,0,3,1,2,2,0,3
+30 - 39,Male,160 - 169 cm,70 - 79 kg,No,1 - 3 times,Mixed,No,No,No,No,No,No,No,Employed,6-7 hours,88.0,126.0,82,25.2,Overweight,High Stage 1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,2,3,4,1,3,1,2,2,1,0
+60 and above,Male,160 - 169 cm,60 - 69 kg,Yes,Never,Mixed,Yes,Yes,No,No,Yes,Yes,Yes,Unemployed,5-6 hours,86.0,155.0,95,22.0,Normal,High Stage 2,0,0,1,1,1,3,1,1,0,0,1,1,1,1,5,3,3,0,2,1,1,3,1,3
+40 - 49,Female,160 - 169 cm,70 - 79 kg,Yes,Never,Mixed,Yes,Yes,No,Yes,No,No,Yes,Employed,5-6 hours,97.0,144.0,92,28.9,Overweight,High Stage 2,0,1,0,0,1,2,1,1,0,1,0,0,1,1,3,3,4,0,2,1,2,3,0,0
+20 - 29,Male,170 - 179 cm,80 and above,No,1 - 3 times,Mixed,No,No,No,No,No,No,No,Employed,6-7 hours,92.0,120.0,80,25.6,Overweight,High Stage 1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,4,5,1,3,1,2,2,1,0
+30 - 39,Female,150 - 159 cm,50 - 59 kg,No,Never,Mixed,No,No,No,No,No,No,No,Employed,5-6 hours,83.0,124.0,81,24.2,Normal,High Stage 1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,2,2,2,0,2,1,1,2,0,0
+60 and above,Male,160 - 169 cm,60 - 69 kg,Yes,Never,Mixed,Yes,Yes,Yes,Yes,No,No,No,Unemployed,5-6 hours,88.0,146.0,94,23.4,Normal,High Stage 2,1,1,0,0,0,2,1,1,1,1,0,0,0,1,5,3,3,0,2,1,1,3,1,3
+40 - 49,Female,160 - 169 cm,70 - 79 kg,Yes,Never,Mixed,Yes,Yes,No,No,No,No,Yes,Unemployed,6-7 hours,95.0,139.0,89,28.3,Overweight,High Stage 1,0,0,0,0,1,1,1,1,0,0,0,0,1,1,3,3,4,0,3,1,2,2,0,3
+30 - 39,Male,170 - 179 cm,70 - 79 kg,Yes,3 - 6 times,Mixed,No,No,No,No,No,No,No,Employed,5-6 hours,87.0,118.0,76,23.1,Normal,Normal,0,0,0,0,0,0,1,0,0,0,0,0,0,0,2,4,4,2,2,1,1,0,1,0
+50 - 59,Female,160 - 169 cm,70 - 79 kg,Yes,Never,Mixed,Yes,Yes,No,No,No,No,Yes,Unemployed,5-6 hours,94.0,141.0,90,28.1,Overweight,High Stage 2,0,0,0,0,1,1,1,1,0,0,0,0,1,1,4,3,4,0,2,1,2,3,0,3
+20 - 29,Male,180 cm and above,70 - 79 kg,Yes,1 - 3 times,Mixed,No,No,No,No,No,No,No,Student,6-7 hours,86.0,120.0,80,23.1,Normal,High Stage 1,0,0,0,0,0,0,1,0,0,0,0,0,0,0,1,5,4,1,3,1,1,2,1,2
+60 and above,Female,150 - 159 cm,50 - 59 kg,No,Never,Mixed,No,No,No,No,No,No,No,Unemployed,5-6 hours,82.0,134.0,86,23.6,Normal,High Stage 1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,5,2,2,0,2,1,1,2,0,3
+30 - 39,Male,170 - 179 cm,80 and above,Yes,Never,Mixed,Yes,Yes,No,No,No,No,No,Employed,5-6 hours,98.0,130.0,85,28.4,Overweight,High Stage 1,0,0,0,0,0,0,1,1,0,0,0,0,0,1,2,4,5,0,2,1,2,2,1,0
+50 - 59,Female,160 - 169 cm,60 - 69 kg,Yes,Never,Mixed,Yes,No,No,No,No,No,Yes,Employed,0-5 hours,87.0,128.0,83,23.5,Normal,High Stage 1,0,0,0,0,1,1,1,0,0,0,0,0,1,1,4,3,3,0,1,1,1,2,0,0
+60 and above,Male,160 - 169 cm,70 - 79 kg,Yes,Never,Mixed,Yes,Yes,No,Yes,No,No,No,Unemployed,5-6 hours,92.0,150.0,95,25.2,Overweight,High Stage 2,0,1,0,0,0,1,1,1,0,1,0,0,0,1,5,3,4,0,2,1,2,3,1,3
+40 - 49,Female,150 - 159 cm,70 - 79 kg,Yes,Never,Mixed,Yes,Yes,No,No,Yes,No,No,Unemployed,6-7 hours,96.0,137.0,88,29.3,Overweight,High Stage 1,0,0,1,0,0,1,1,1,0,0,1,0,0,1,3,2,4,0,3,1,2,2,0,3
+20 - 29,Male,170 - 179 cm,80 and above,No,1 - 3 times,Mixed,No,No,No,No,No,No,No,Employed,6-7 hours,94.0,122.0,81,28.7,Overweight,High Stage 1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,4,5,1,3,1,2,2,1,0
+60 and above,Female,150 - 159 cm,50 - 59 kg,Yes,Never,Mixed,Yes,Yes,Yes,Yes,No,No,Yes,Unemployed,7-8 hours,85.0,145.0,92,24.8,Normal,High Stage 2,1,1,0,0,1,3,1,1,1,1,0,0,1,1,5,2,2,0,4,1,1,3,0,3
+40 - 49,Male,170 - 179 cm,80 and above,No,Never,Mixed,No,No,No,No,No,No,No,Employed,5-6 hours,91.0,132.0,86,27.0,Overweight,High Stage 1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,3,4,5,0,2,1,2,2,1,0
+30 - 39,Female,160 - 169 cm,60 - 69 kg,No,Never,Mixed,No,No,No,No,No,No,No,Employed,6-7 hours,84.0,116.0,76,22.1,Normal,Normal,0,0,0,0,0,0,0,0,0,0,0,0,0,0,2,3,3,0,3,1,1,0,0,0
+60 and above,Male,170 - 179 cm,70 - 79 kg,Yes,Never,Mixed,Yes,Yes,No,No,No,Yes,No,Unemployed,6-7 hours,95.0,148.0,94,26.3,Overweight,High Stage 2,0,0,0,1,0,1,1,1,0,0,0,1,0,1,5,4,4,0,3,1,2,3,1,3
+50 - 59,Female,150 - 159 cm,60 - 69 kg,Yes,Never,Mixed,Yes,Yes,No,No,No,No,No,Unemployed,8 hours and above,92.0,138.0,89,28.0,Overweight,High Stage 1,0,0,0,0,0,0,1,1,0,0,0,0,0,1,4,2,3,0,5,1,2,2,0,3
+20 - 29,Male,180 cm and above,80 and above,Yes,Never,Mixed,No,No,No,No,No,No,No,Student,8 hours and above,90.0,120.0,80,24.5,Normal,High Stage 1,0,0,0,0,0,0,1,0,0,0,0,0,0,0,1,5,5,0,5,1,1,2,1,2
+40 - 49,Female,160 - 169 cm,50 - 59 kg,No,Never,Mixed,No,No,No,No,No,No,No,Employed,7-8 hours,81.0,125.0,82,22.0,Normal,High Stage 1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,3,3,2,0,4,1,1,2,0,0
+60 and above,Male,160 - 169 cm,60 - 69 kg,Yes,Never,Mixed,Yes,Yes,Yes,Yes,No,No,Yes,Unemployed,5-6 hours,89.0,152.0,96,24.7,Normal,High Stage 2,1,1,0,0,1,3,1,1,1,1,0,0,1,1,5,3,3,0,2,1,1,3,1,3
+30 - 39,Female,160 - 169 cm,60 - 69 kg,Yes,Never,Mixed,No,No,No,No,No,No,No,Unemployed,7-8 hours,86.0,120.0,80,24.1,Normal,High Stage 1,0,0,0,0,0,0,1,0,0,0,0,0,0,0,2,3,3,0,4,1,1,2,0,3
+50 - 59,Male,170 - 179 cm,80 and above,Yes,Never,Mixed,Yes,Yes,No,No,No,Yes,Yes,Employed,6-7 hours,100.0,144.0,92,28.4,Overweight,High Stage 2,0,0,0,1,1,2,1,1,0,0,0,1,1,1,4,4,5,0,3,1,2,3,1,0
+20 - 29,Female,150 - 159 cm,50 - 59 kg,No,1 - 3 times,Mixed,No,No,No,No,No,No,No,Student,7-8 hours,77.0,114.0,75,20.8,Normal,Normal,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,2,2,1,4,1,1,0,0,2
+60 and above,Male,170 - 179 cm,70 - 79 kg,Yes,Never,Mixed,Yes,Yes,No,No,No,No,Yes,Unemployed,6-7 hours,93.0,140.0,88,25.3,Overweight,High Stage 1,0,0,0,0,1,1,1,1,0,0,0,0,1,1,5,4,4,0,3,1,2,2,1,3
+40 - 49,Female,160 - 169 cm,60 - 69 kg,No,Never,Mixed,Yes,No,No,No,No,No,No,Unemployed,6-7 hours,89.0,132.0,85,26.2,Overweight,High Stage 1,0,0,0,0,0,0,0,0,0,0,0,0,0,1,3,3,3,0,3,1,2,2,0,3
+30 - 39,Male,170 - 179 cm,80 and above,Yes,1 - 3 times,Mixed,No,Yes,No,No,No,No,No,Employed,7-8 hours,104.0,138.0,90,29.4,Overweight,High Stage 1,0,0,0,0,0,0,1,1,0,0,0,0,0,0,2,4,5,1,4,1,2,2,1,0
+50 - 59,Female,160 - 169 cm,50 - 59 kg,No,Never,Mixed,Yes,No,No,No,No,Yes,No,Employed,6-7 hours,84.0,126.0,82,22.5,Normal,High Stage 1,0,0,0,1,0,1,0,0,0,0,0,1,0,1,4,3,2,0,3,1,1,2,0,0
+60 and above,Male,160 - 169 cm,60 - 69 kg,Yes,Never,Mixed,Yes,Yes,No,No,No,Yes,Yes,Unemployed,0-5 hours,87.0,158.0,98,23.3,Normal,High Stage 2,0,0,0,1,1,2,1,1,0,0,0,1,1,1,5,3,3,0,1,1,1,3,1,3
+40 - 49,Female,150 - 159 cm,70 - 79 kg,Yes,Never,Mixed,Yes,Yes,Yes,Yes,No,Yes,Yes,Unemployed,6-7 hours,96.0,136.0,87,29.6,Overweight,High Stage 1,1,1,0,1,1,4,1,1,1,1,0,1,1,1,3,2,4,0,3,1,2,2,0,3
+20 - 29,Female,180 cm and above,70 - 79 kg,No,1 - 3 times,Mixed,No,No,No,No,No,No,No,Student,7-8 hours,88.0,118.0,78,23.5,Normal,Normal,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,5,4,1,4,1,1,0,0,2
+30 - 39,Male,170 - 179 cm,80 and above,Yes,Never,Mixed,Yes,Yes,Yes,No,Yes,No,No,Employed,8 hours and above,96.0,134.0,88,27.4,Overweight,High Stage 1,1,0,1,0,0,2,1,1,1,0,1,0,0,1,2,4,5,0,5,1,2,2,1,0
+60 and above,Female,150 - 159 cm,50 - 59 kg,No,Never,Mixed,Yes,No,No,No,No,No,Yes,Unemployed,5-6 hours,83.0,142.0,90,22.0,Normal,High Stage 2,0,0,0,0,1,1,0,0,0,0,0,0,1,1,5,2,2,0,2,1,1,3,0,3
+40 - 49,Male,160 - 169 cm,70 - 79 kg,No,Never,Mixed,Yes,No,No,No,No,Yes,No,Employed,6-7 hours,90.0,128.0,84,27.5,Overweight,High Stage 1,0,0,0,1,0,1,0,0,0,0,0,1,0,1,3,3,4,0,3,1,2,2,1,0
+20 - 29,Female,160 - 169 cm,50 - 59 kg,No,Never,Mixed,Yes,No,No,No,No,No,No,Employed,7-8 hours,81.0,115.0,76,22.1,Normal,Normal,0,0,0,0,0,0,0,0,0,0,0,0,0,1,1,3,2,0,4,1,1,0,0,0
+50 - 59,Male,170 - 179 cm,80 and above,Yes,Never,Mixed,Yes,Yes,No,No,No,Yes,Yes,Employed,6-7 hours,102.0,148.0,94,30.4,Obese,High Stage 2,0,0,0,1,1,2,1,1,0,0,0,1,1,1,4,4,5,0,3,1,3,3,1,0
+40 - 49,Female,150 - 159 cm,60 - 69 kg,Yes,Never,Mixed,Yes,Yes,No,No,No,No,No,Unemployed,5-6 hours,89.0,130.0,85,26.6,Overweight,High Stage 1,0,0,0,0,0,0,1,1,0,0,0,0,0,1,3,2,3,0,2,1,2,2,0,3
+60 and above,Male,160 - 169 cm,70 - 79 kg,Yes,Never,Mixed,Yes,Yes,No,Yes,No,Yes,Yes,Unemployed,6-7 hours,91.0,155.0,98,26.0,Overweight,High Stage 2,0,1,0,1,1,3,1,1,0,1,0,1,1,1,5,3,4,0,3,1,2,3,1,3
+20 - 29,Female,160 - 169 cm,50 - 59 kg,No,1 - 3 times,Mixed,No,No,No,No,No,No,No,Unemployed,8 hours and above,78.0,110.0,70,20.3,Normal,Normal,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,3,2,1,5,1,1,0,0,3
+30 - 39,Male,170 - 179 cm,80 and above,Yes,1 - 3 times,Mixed,No,No,No,No,No,No,No,Employed,6-7 hours,92.0,126.0,82,26.1,Overweight,High Stage 1,0,0,0,0,0,0,1,0,0,0,0,0,0,0,2,4,5,1,3,1,2,2,1,0
+60 and above,Female,150 - 159 cm,50 - 59 kg,Yes,Never,Mixed,Yes,Yes,Yes,No,No,Yes,Yes,Unemployed,5-6 hours,86.0,144.0,92,24.9,Normal,High Stage 2,1,0,0,1,1,3,1,1,1,0,0,1,1,1,5,2,2,0,2,1,1,3,0,3
+40 - 49,Male,170 - 179 cm,70 - 79 kg,No,Never,Mixed,Yes,No,No,No,No,No,No,Employed,5-6 hours,90.0,132.0,86,26.0,Overweight,High Stage 1,0,0,0,0,0,0,0,0,0,0,0,0,0,1,3,4,4,0,2,1,2,2,1,0
+50 - 59,Female,150 - 159 cm,70 - 79 kg,Yes,Never,Mixed,Yes,Yes,Yes,No,No,Yes,Yes,Unemployed,6-7 hours,94.0,140.0,88,28.1,Overweight,High Stage 1,1,0,0,1,1,3,1,1,1,0,0,1,1,1,4,2,4,0,3,1,2,2,0,3
+30 - 39,Male,180 cm and above,80 and above,Yes,Never,Mixed,No,No,No,No,No,No,No,Employed,7-8 hours,96.0,122.0,80,26.2,Overweight,High Stage 1,0,0,0,0,0,0,1,0,0,0,0,0,0,0,2,5,5,0,4,1,2,2,1,0
+20 - 29,Female,150 - 159 cm,50 - 59 kg,Yes,1 - 3 times,Mixed,No,No,No,No,No,No,Yes,Student,8 hours and above,76.0,108.0,72,20.3,Normal,Normal,0,0,0,0,1,1,1,0,0,0,0,0,1,0,1,2,2,1,5,1,1,0,0,2
+50 - 59,Male,160 - 169 cm,80 and above,Yes,Never,Mixed,Yes,Yes,No,No,No,No,No,Employed,6-7 hours,98.0,145.0,92,29.4,Overweight,High Stage 2,0,0,0,0,0,0,1,1,0,0,0,0,0,1,4,3,5,0,3,1,2,3,1,0
+40 - 49,Female,160 - 169 cm,60 - 69 kg,No,Never,Mixed,Yes,No,No,No,No,Yes,No,Unemployed,6-7 hours,84.0,128.0,85,23.9,Normal,High Stage 1,0,0,0,1,0,1,0,0,0,0,0,1,0,1,3,3,3,0,3,1,1,2,0,3
+60 and above,Male,160 - 169 cm,60 - 69 kg,Yes,Never,Mixed,Yes,Yes,Yes,Yes,No,Yes,Yes,Unemployed,0-5 hours,88.0,158.0,96,23.9,Normal,High Stage 2,1,1,0,1,1,4,1,1,1,1,0,1,1,1,5,3,3,0,1,1,1,3,1,3
+30 - 39,Female,160 - 169 cm,60 - 69 kg,No,Never,Mixed,Yes,No,No,No,No,No,No,Employed,6-7 hours,82.0,118.0,78,22.6,Normal,Normal,0,0,0,0,0,0,0,0,0,0,0,0,0,1,2,3,3,0,3,1,1,0,0,0
+20 - 29,Male,170 - 179 cm,70 - 79 kg,No,Never,Mixed,No,No,No,No,No,No,No,Employed,6-7 hours,88.0,120.0,80,23.6,Normal,High Stage 1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,4,4,0,3,1,1,2,1,0
+50 - 59,Female,150 - 159 cm,60 - 69 kg,Yes,Never,Mixed,Yes,Yes,No,No,No,No,No,Unemployed,5-6 hours,93.0,142.0,90,27.9,Overweight,High Stage 2,0,0,0,0,0,0,1,1,0,0,0,0,0,1,4,2,3,0,2,1,2,3,0,3
+40 - 49,Male,170 - 179 cm,70 - 79 kg,Yes,Never,Mixed,Yes,Yes,No,No,No,No,No,Employed,6-7 hours,92.0,130.0,84,27.0,Overweight,High Stage 1,0,0,0,0,0,0,1,1,0,0,0,0,0,1,3,4,4,0,3,1,2,2,1,0
+60 and above,Female,150 - 159 cm,50 - 59 kg,No,Never,Mixed,Yes,Yes,No,No,No,No,No,Unemployed,5-6 hours,82.0,148.0,92,23.4,Normal,High Stage 2,0,0,0,0,0,0,0,1,0,0,0,0,0,1,5,2,2,0,2,1,1,3,0,3
+40 - 49,Male,170 - 179 cm,80 and above,Yes,Never,Mixed,Yes,Yes,No,No,No,No,No,Employed,6-7 hours,97.0,138.0,88,27.7,Overweight,High Stage 1,0,0,0,0,0,0,1,1,0,0,0,0,0,1,3,4,5,0,3,1,2,2,1,0
+20 - 29,Female,160 - 169 cm,50 - 59 kg,No,Never,Mixed,No,No,No,No,No,No,No,Unemployed,7-8 hours,80.0,116.0,75,20.9,Normal,Normal,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,3,2,0,4,1,1,0,0,3
+50 - 59,Male,160 - 169 cm,80 and above,Yes,Never,Mixed,Yes,Yes,No,No,No,No,Yes,Employed,6-7 hours,104.0,150.0,95,31.9,Obese,High Stage 2,0,0,0,0,1,1,1,1,0,0,0,0,1,1,4,3,5,0,3,1,3,3,1,0
+30 - 39,Female,150 - 159 cm,60 - 69 kg,No,Never,Mixed,Yes,No,No,No,No,Yes,No,Unemployed,6-7 hours,86.0,124.0,82,25.2,Overweight,High Stage 1,0,0,0,1,0,1,0,0,0,0,0,1,0,1,2,2,3,0,3,1,2,2,0,3
+60 and above,Male,170 - 179 cm,70 - 79 kg,Yes,Never,Mixed,Yes,Yes,No,No,No,No,Yes,Unemployed,6-7 hours,90.0,140.0,89,24.1,Normal,High Stage 1,0,0,0,0,1,1,1,1,0,0,0,0,1,1,5,4,4,0,3,1,1,2,1,3
+20 - 29,Male,180 cm and above,70 - 79 kg,No,Never,Mixed,No,No,No,No,No,No,No,Student,7-8 hours,87.0,118.0,78,23.5,Normal,Normal,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,5,4,0,4,1,1,0,1,2
+40 - 49,Female,160 - 169 cm,70 - 79 kg,Yes,Never,Mixed,Yes,Yes,No,No,No,Yes,Yes,Employed,6-7 hours,96.0,136.0,88,29.3,Overweight,High Stage 1,0,0,0,1,1,2,1,1,0,0,0,1,1,1,3,3,4,0,3,1,2,2,0,0
+30 - 39,Male,170 - 179 cm,80 and above,No,Never,Mixed,No,No,No,No,No,No,No,Employed,6-7 hours,91.0,128.0,84,26.1,Overweight,High Stage 1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,2,4,5,0,3,1,2,2,1,0
+60 and above,Female,150 - 159 cm,50 - 59 kg,No,Never,Mixed,Yes,Yes,No,No,No,No,Yes,Unemployed,7-8 hours,79.0,152.0,94,21.8,Normal,High Stage 2,0,0,0,0,1,1,0,1,0,0,0,0,1,1,5,2,2,0,4,1,1,3,0,3
+40 - 49,Male,170 - 179 cm,70 - 79 kg,Yes,Never,Mixed,Yes,Yes,No,No,No,No,No,Employed,5-6 hours,89.0,134.0,86,24.5,Normal,High Stage 1,0,0,0,0,0,0,1,1,0,0,0,0,0,1,3,4,4,0,2,1,1,2,1,0
+20 - 29,Female,150 - 159 cm,50 - 59 kg,No,Never,Mixed,No,No,No,No,No,No,No,Unemployed,7-8 hours,80.0,112.0,74,21.8,Normal,Normal,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,2,2,0,4,1,1,0,0,3
+60 and above,Male,160 - 169 cm,80 and above,No,Never,Mixed,Yes,Yes,No,Yes,No,Yes,Yes,Employed,6-7 hours,100.0,146.0,92,30.1,Obese,High Stage 2,0,1,0,1,1,3,0,1,0,1,0,1,1,1,5,3,5,0,3,1,3,3,1,0
+50 - 59,Female,160 - 169 cm,60 - 69 kg,No,Never,Mixed,Yes,No,Yes,Yes,No,No,No,Employed,6-7 hours,89.0,132.0,85,25.8,Overweight,High Stage 1,1,1,0,0,0,2,0,0,1,1,0,0,0,1,4,3,3,0,3,1,2,2,0,0
+30 - 39,Male,170 - 179 cm,80 and above,Yes,Daily,Mixed,No,Yes,No,No,No,No,No,Employed,6-7 hours,102.0,140.0,90,28.4,Overweight,High Stage 2,0,0,0,0,0,0,1,1,0,0,0,0,0,0,2,4,5,3,3,1,2,3,1,0
+60 and above,Female,150 - 159 cm,60 - 69 kg,Yes,Never,Mixed,Yes,Yes,No,Yes,No,Yes,No,Unemployed,6-7 hours,85.0,144.0,91,25.4,Overweight,High Stage 2,0,1,0,1,0,2,1,1,0,1,0,1,0,1,5,2,3,0,3,1,2,3,0,3
+20 - 29,Male,180 cm and above,70 - 79 kg,No,Never,Mixed,No,No,No,No,No,No,No,Student,8 hours and above,85.0,120.0,80,22.0,Normal,High Stage 1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,5,4,0,5,1,1,2,1,2
+40 - 49,Female,160 - 169 cm,70 - 79 kg,Yes,Never,Mixed,Yes,Yes,No,No,No,No,No,Employed,6-7 hours,92.0,138.0,88,27.1,Overweight,High Stage 1,0,0,0,0,0,0,1,1,0,0,0,0,0,1,3,3,4,0,3,1,2,2,0,0
+60 and above,Male,160 - 169 cm,60 - 69 kg,Yes,Never,Mixed,Yes,Yes,Yes,Yes,No,Yes,Yes,Unemployed,0-5 hours,88.0,160.0,100,24.2,Normal,High Stage 2,1,1,0,1,1,4,1,1,1,1,0,1,1,1,5,3,3,0,1,1,1,3,1,3
+30 - 39,Female,150 - 159 cm,50 - 59 kg,No,Never,Mixed,No,No,No,No,No,No,No,Unemployed,7-8 hours,80.0,115.0,76,22.4,Normal,Normal,0,0,0,0,0,0,0,0,0,0,0,0,0,0,2,2,2,0,4,1,1,0,0,3
+50 - 59,Male,170 - 179 cm,80 and above,Yes,Never,Mixed,Yes,Yes,No,No,Yes,Yes,Yes,Employed,6-7 hours,108.0,152.0,96,31.0,Obese,High Stage 2,0,0,1,1,1,3,1,1,0,0,1,1,1,1,4,4,5,0,3,1,3,3,1,0
+20 - 29,Male,170 - 179 cm,60 - 69 kg,Yes,Never,Mixed,No,No,No,No,No,No,No,Employed,8 hours and above,82.0,114.0,75,21.2,Normal,Normal,0,0,0,0,0,0,1,0,0,0,0,0,0,0,1,4,3,0,5,1,1,0,1,0
+60 and above,Female,150 - 159 cm,60 - 69 kg,Yes,Never,Mixed,Yes,Yes,Yes,No,No,No,Yes,Unemployed,6-7 hours,90.0,142.0,90,26.4,Overweight,High Stage 2,1,0,0,0,1,2,1,1,1,0,0,0,1,1,5,2,3,0,3,1,2,3,0,3
+30 - 39,Male,170 - 179 cm,80 and above,Yes,1 - 3 times,Mixed,Yes,Yes,No,No,No,No,No,Employed,6-7 hours,95.0,132.0,86,27.7,Overweight,High Stage 1,0,0,0,0,0,0,1,1,0,0,0,0,0,1,2,4,5,1,3,1,2,2,1,0
+50 - 59,Female,160 - 169 cm,60 - 69 kg,No,Never,Mixed,Yes,No,No,Yes,No,No,No,Employed,6-7 hours,84.0,128.0,84,22.9,Normal,High Stage 1,0,1,0,0,0,1,0,0,0,1,0,0,0,1,4,3,3,0,3,1,1,2,0,0
+60 and above,Male,160 - 169 cm,70 - 79 kg,Yes,Never,Mixed,Yes,Yes,No,No,No,Yes,Yes,Unemployed,6-7 hours,93.0,155.0,98,27.2,Overweight,High Stage 2,0,0,0,1,1,2,1,1,0,0,0,1,1,1,5,3,4,0,3,1,2,3,1,3
+40 - 49,Female,160 - 169 cm,50 - 59 kg,No,Never,Mixed,No,No,No,No,No,No,No,Unemployed,7-8 hours,79.0,112.0,74,21.1,Normal,Normal,0,0,0,0,0,0,0,0,0,0,0,0,0,0,3,3,2,0,4,1,1,0,0,3
+40 - 49,Male,170 - 179 cm,80 and above,Yes,1 - 3 times,Mixed,Yes,Yes,No,No,No,No,No,Employed,6-7 hours,99.0,136.0,88,28.1,Overweight,High Stage 1,0,0,0,0,0,0,1,1,0,0,0,0,0,1,3,4,5,1,3,1,2,2,1,0
+30 - 39,Female,160 - 169 cm,60 - 69 kg,Yes,Never,Mixed,No,No,No,No,No,No,No,Unemployed,6-7 hours,85.0,120.0,80,22.9,Normal,High Stage 1,0,0,0,0,0,0,1,0,0,0,0,0,0,0,2,3,3,0,3,1,1,2,0,3
+50 - 59,Male,170 - 179 cm,80 and above,Yes,Never,Mixed,Yes,Yes,No,No,No,No,No,Employed,6-7 hours,105.0,148.0,94,31.5,Obese,High Stage 2,0,0,0,0,0,0,1,1,0,0,0,0,0,1,4,4,5,0,3,1,3,3,1,0
+40 - 49,Female,150 - 159 cm,60 - 69 kg,No,Never,Mixed,Yes,No,No,No,No,Yes,No,Unemployed,6-7 hours,88.0,134.0,86,26.5,Overweight,High Stage 1,0,0,0,1,0,1,0,0,0,0,0,1,0,1,3,2,3,0,3,1,2,2,0,3
+30 - 39,Male,180 cm and above,80 and above,Yes,Never,Mixed,No,No,No,No,No,No,No,Employed,7-8 hours,92.0,122.0,80,25.1,Overweight,High Stage 1,0,0,0,0,0,0,1,0,0,0,0,0,0,0,2,5,5,0,4,1,2,2,1,0
+60 and above,Female,150 - 159 cm,50 - 59 kg,Yes,Never,Mixed,Yes,Yes,Yes,Yes,No,Yes,Yes,Unemployed,5-6 hours,84.0,145.0,92,24.5,Normal,High Stage 2,1,1,0,1,1,4,1,1,1,1,0,1,1,1,5,2,2,0,2,1,1,3,0,3
+30 - 39,Male,170 - 179 cm,70 - 79 kg,No,1 - 3 times,Mixed,No,No,No,No,No,No,No,Employed,6-7 hours,90.0,128.0,84,25.8,Overweight,High Stage 1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,2,4,4,1,3,1,2,2,1,0
+20 - 29,Female,150 - 159 cm,50 - 59 kg,No,Never,Mixed,No,No,No,No,No,No,No,Student,8 hours and above,78.0,110.0,72,21.4,Normal,Normal,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,2,2,0,5,1,1,0,0,2
+50 - 59,Male,160 - 169 cm,80 and above,Yes,Never,Mixed,Yes,Yes,No,No,No,No,Yes,Employed,6-7 hours,97.0,144.0,92,28.7,Overweight,High Stage 2,0,0,0,0,1,1,1,1,0,0,0,0,1,1,4,3,5,0,3,1,2,3,1,0
+40 - 49,Female,160 - 169 cm,60 - 69 kg,Yes,Never,Mixed,Yes,No,No,No,No,No,No,Unemployed,6-7 hours,91.0,132.0,85,26.3,Overweight,High Stage 1,0,0,0,0,0,0,1,0,0,0,0,0,0,1,3,3,3,0,3,1,2,2,0,3
+60 and above,Male,160 - 169 cm,70 - 79 kg,Yes,Never,Mixed,Yes,Yes,No,No,No,Yes,Yes,Unemployed,6-7 hours,92.0,152.0,96,25.8,Overweight,High Stage 2,0,0,0,1,1,2,1,1,0,0,0,1,1,1,5,3,4,0,3,1,2,3,1,3
+60 and above,Female,160 - 169 cm,50 - 59 kg,No,Never,Mixed,Yes,No,Yes,Yes,No,No,Yes,Unemployed,6-7 hours,80.0,115.0,76,21.9,Normal,Normal,1,1,0,0,1,3,0,0,1,1,0,0,1,1,5,3,2,0,3,1,1,0,0,3
+40 - 49,Male,170 - 179 cm,80 and above,Yes,Never,Mixed,Yes,Yes,No,No,No,No,No,Employed,7-8 hours,100.0,140.0,90,28.7,Overweight,High Stage 2,0,0,0,0,0,0,1,1,0,0,0,0,0,1,3,4,5,0,4,1,2,3,1,0
+30 - 39,Female,160 - 169 cm,60 - 69 kg,No,Never,Mixed,No,No,No,No,No,No,No,Employed,7-8 hours,82.0,118.0,78,22.0,Normal,Normal,0,0,0,0,0,0,0,0,0,0,0,0,0,0,2,3,3,0,4,1,1,0,0,0
+60 and above,Male,170 - 179 cm,70 - 79 kg,Yes,Never,Mixed,Yes,Yes,Yes,No,No,No,Yes,Employed,6-7 hours,94.0,146.0,92,26.0,Overweight,High Stage 2,1,0,0,0,1,2,1,1,1,0,0,0,1,1,5,4,4,0,3,1,2,3,1,0
+20 - 29,Female,150 - 159 cm,50 - 59 kg,No,Never,Mixed,No,No,No,No,No,No,No,Student,8 hours and above,79.0,120.0,80,21.2,Normal,High Stage 1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,2,2,0,5,1,1,2,0,2
+50 - 59,Male,170 - 179 cm,80 and above,Yes,Never,Mixed,Yes,No,No,No,No,No,No,Employed,5-6 hours,108.0,120.0,80,30.3,Obese,High Stage 1,0,0,0,0,0,0,1,0,0,0,0,0,0,1,4,4,5,0,2,1,3,2,1,0
+30 - 39,Female,160 - 169 cm,60 - 69 kg,No,Never,Mixed,No,No,No,No,No,No,No,Unemployed,6-7 hours,86.0,126.0,82,24.7,Normal,High Stage 1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,2,3,3,0,3,1,1,2,0,3
+60 and above,Male,160 - 169 cm,60 - 69 kg,Yes,Never,Mixed,Yes,Yes,No,No,No,Yes,Yes,Unemployed,6-7 hours,88.0,158.0,98,23.1,Normal,High Stage 2,0,0,0,1,1,2,1,1,0,0,0,1,1,1,5,3,3,0,3,1,1,3,1,3
+20 - 29,Female,160 - 169 cm,50 - 59 kg,No,Never,Mixed,No,No,No,No,No,No,No,Employed,7-8 hours,79.0,114.0,75,20.7,Normal,Normal,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,3,2,0,4,1,1,0,0,0
+40 - 49,Male,170 - 179 cm,80 and above,Yes,Never,Mixed,Yes,No,No,No,No,No,No,Employed,6-7 hours,93.0,136.0,88,27.0,Overweight,High Stage 1,0,0,0,0,0,0,1,0,0,0,0,0,0,1,3,4,5,0,3,1,2,2,1,0
+50 - 59,Female,150 - 159 cm,60 - 69 kg,Yes,Never,Mixed,Yes,Yes,No,Yes,No,Yes,Yes,Employed,6-7 hours,92.0,138.0,90,27.6,Overweight,High Stage 1,0,1,0,1,1,3,1,1,0,1,0,1,1,1,4,2,3,0,3,1,2,2,0,0
+30 - 39,Male,170 - 179 cm,70 - 79 kg,No,Never,Mixed,No,No,No,No,No,No,No,Employed,7-8 hours,89.0,120.0,80,23.7,Normal,High Stage 1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,2,4,4,0,4,1,1,2,1,0
+60 and above,Female,150 - 159 cm,60 - 69 kg,Yes,Never,Mixed,Yes,Yes,No,Yes,No,Yes,Yes,Unemployed,5-6 hours,87.0,144.0,92,25.8,Overweight,High Stage 2,0,1,0,1,1,3,1,1,0,1,0,1,1,1,5,2,3,0,2,1,2,3,0,3
+40 - 49,Male,170 - 179 cm,80 and above,Yes,Never,Mixed,Yes,No,No,No,No,No,No,Employed,6-7 hours,96.0,134.0,86,28.4,Overweight,High Stage 1,0,0,0,0,0,0,1,0,0,0,0,0,0,1,3,4,5,0,3,1,2,2,1,0
+60 and above,Female,160 - 169 cm,50 - 59 kg,No,Never,Mixed,Yes,No,No,No,No,Yes,Yes,Unemployed,6-7 hours,81.0,120.0,80,21.6,Normal,High Stage 1,0,0,0,1,1,2,0,0,0,0,0,1,1,1,5,3,2,0,3,1,1,2,0,3
+50 - 59,Male,160 - 169 cm,80 and above,Yes,Never,Mixed,Yes,Yes,No,No,No,No,No,Employed,6-7 hours,102.0,145.0,92,30.5,Obese,High Stage 2,0,0,0,0,0,0,1,1,0,0,0,0,0,1,4,3,5,0,3,1,3,3,1,0
+40 - 49,Female,150 - 159 cm,60 - 69 kg,Yes,Never,Mixed,Yes,No,No,Yes,No,No,No,Employed,5-6 hours,85.0,130.0,85,24.9,Normal,High Stage 1,0,1,0,0,0,1,1,0,0,1,0,0,0,1,3,2,3,0,2,1,1,2,0,0
+60 and above,Male,160 - 169 cm,60 - 69 kg,Yes,Never,Mixed,Yes,Yes,Yes,Yes,No,No,Yes,Unemployed,6-7 hours,90.0,155.0,98,25.9,Overweight,High Stage 2,1,1,0,0,1,3,1,1,1,1,0,0,1,1,5,3,3,0,3,1,2,3,1,3
+30 - 39,Male,160 - 169 cm,50 - 59 kg,No,3 - 6 times,Mostly healthy,No,No,No,No,No,No,No,Employed,7-8 hours,81.0,120.0,80,22.0,Normal,High Stage 1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,2,3,2,2,4,2,1,2,1,0
+20 - 29,Male,180 cm and above,70 - 79 kg,Yes,1 - 3 times,Mixed,No,No,No,No,No,No,No,Employed,6-7 hours,90.0,122.0,80,24.1,Normal,High Stage 1,0,0,0,0,0,0,1,0,0,0,0,0,0,0,1,5,4,1,3,1,1,2,1,0
+60 and above,Female,150 - 159 cm,60 - 69 kg,Yes,Never,Mixed,Yes,Yes,No,No,No,No,Yes,Unemployed,6-7 hours,91.0,142.0,90,27.1,Overweight,High Stage 2,0,0,0,0,1,1,1,1,0,0,0,0,1,1,5,2,3,0,3,1,2,3,0,3
+40 - 49,Male,170 - 179 cm,80 and above,Yes,Never,Mixed,Yes,No,No,No,No,No,No,Employed,6-7 hours,94.0,132.0,86,27.1,Overweight,High Stage 1,0,0,0,0,0,0,1,0,0,0,0,0,0,1,3,4,5,0,3,1,2,2,1,0
+50 - 59,Male,170 - 179 cm,80 and above,Yes,Never,Mixed,Yes,Yes,No,No,No,No,Yes,Employed,6-7 hours,106.0,152.0,96,29.7,Overweight,High Stage 2,0,0,0,0,1,1,1,1,0,0,0,0,1,1,4,4,5,0,3,1,2,3,1,0
+20 - 29,Female,150 - 159 cm,50 - 59 kg,Yes,Never,Mixed,No,No,No,No,No,No,No,Employed,7-8 hours,78.0,120.0,80,20.4,Normal,High Stage 1,0,0,0,0,0,0,1,0,0,0,0,0,0,0,1,2,2,0,4,1,1,2,0,0
+60 and above,Male,160 - 169 cm,70 - 79 kg,No,Never,Mixed,Yes,Yes,Yes,Yes,No,Yes,Yes,Unemployed,5-6 hours,92.0,140.0,88,25.9,Overweight,High Stage 1,1,1,0,1,1,4,0,1,1,1,0,1,1,1,5,3,4,0,2,1,2,2,1,3
+40 - 49,Female,160 - 169 cm,60 - 69 kg,Yes,Never,Mixed,Yes,No,No,No,No,No,No,Unemployed,7-8 hours,91.0,132.0,85,27.0,Overweight,High Stage 1,0,0,0,0,0,0,1,0,0,0,0,0,0,1,3,3,3,0,4,1,2,2,0,3
+60 and above,Male,160 - 169 cm,60 - 69 kg,Yes,Never,Mixed,Yes,Yes,No,No,No,No,Yes,Unemployed,6-7 hours,87.0,158.0,96,24.5,Normal,High Stage 2,0,0,0,0,1,1,1,1,0,0,0,0,1,1,5,3,3,0,3,1,1,3,1,3
+30 - 39,Female,160 - 169 cm,50 - 59 kg,No,Never,Mixed,No,No,No,No,No,No,No,Unemployed,7-8 hours,80.0,120.0,80,22.1,Normal,High Stage 1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,2,3,2,0,4,1,1,2,0,3
+20 - 29,Male,180 cm and above,70 - 79 kg,No,Never,Mixed,No,No,No,No,No,No,No,Student,8 hours and above,86.0,120.0,80,22.5,Normal,High Stage 1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,5,4,0,5,1,1,2,1,2
+50 - 59,Female,150 - 159 cm,60 - 69 kg,Yes,Never,Mixed,Yes,Yes,Yes,No,No,No,Yes,Unemployed,7-8 hours,89.0,135.0,87,25.9,Overweight,High Stage 1,1,0,0,0,1,2,1,1,1,0,0,0,1,1,4,2,3,0,4,1,2,2,0,3
+40 - 49,Male,170 - 179 cm,80 and above,Yes,Never,Mixed,Yes,Yes,No,No,No,No,No,Employed,6-7 hours,101.0,144.0,92,28.7,Overweight,High Stage 2,0,0,0,0,0,0,1,1,0,0,0,0,0,1,3,4,5,0,3,1,2,3,1,0
+30 - 39,Female,160 - 169 cm,50 - 59 kg,No,Never,Mixed,No,No,No,No,No,No,No,Unemployed,6-7 hours,82.0,120.0,80,21.9,Normal,High Stage 1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,2,3,2,0,3,1,1,2,0,3
+60 and above,Male,160 - 169 cm,60 - 69 kg,Yes,Never,Mixed,Yes,Yes,Yes,Yes,No,Yes,Yes,Unemployed,6-7 hours,85.0,160.0,100,23.1,Normal,High Stage 2,1,1,0,1,1,4,1,1,1,1,0,1,1,1,5,3,3,0,3,1,1,3,1,3
+20 - 29,Female,150 - 159 cm,50 - 59 kg,No,Never,Mixed,No,No,No,No,No,No,No,Student,7-8 hours,77.0,108.0,70,19.8,Normal,Normal,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,2,2,0,4,1,1,0,0,2
+40 - 49,Male,170 - 179 cm,80 and above,Yes,Never,Mixed,Yes,No,No,No,No,Yes,No,Employed,6-7 hours,98.0,120.0,80,28.7,Overweight,High Stage 1,0,0,0,1,0,1,1,0,0,0,0,1,0,1,3,4,5,0,3,1,2,2,1,0
+50 - 59,Female,160 - 169 cm,60 - 69 kg,Yes,Never,Mixed,Yes,Yes,No,No,No,Yes,No,Unemployed,6-7 hours,90.0,136.0,88,26.2,Overweight,High Stage 1,0,0,0,1,0,1,1,1,0,0,0,1,0,1,4,3,3,0,3,1,2,2,0,3
+30 - 39,Male,170 - 179 cm,80 and above,No,Never,Mixed,No,No,No,No,No,No,No,Employed,6-7 hours,91.0,128.0,84,25.8,Overweight,High Stage 1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,2,4,5,0,3,1,2,2,1,0
+60 and above,Female,150 - 159 cm,50 - 59 kg,No,Never,Mixed,Yes,Yes,Yes,Yes,No,Yes,Yes,Unemployed,6-7 hours,83.0,148.0,94,23.5,Normal,High Stage 2,1,1,0,1,1,4,0,1,1,1,0,1,1,1,5,2,2,0,3,1,1,3,0,3
+20 - 29,Male,180 cm and above,80 and above,No,1 - 3 times,Mixed,No,No,No,No,No,No,Yes,Employed,7-8 hours,82.0,120.0,80,24.8,Normal,High Stage 1,0,0,0,0,1,1,0,0,0,0,0,0,1,0,1,5,5,1,4,1,1,2,1,0
+40 - 49,Female,150 - 159 cm,70 - 79 kg,Yes,Never,Mixed,Yes,No,No,No,No,No,No,Employed,6-7 hours,96.0,120.0,80,28.8,Overweight,High Stage 1,0,0,0,0,0,0,1,0,0,0,0,0,0,1,3,2,4,0,3,1,2,2,0,0
+50 - 59,Male,160 - 169 cm,80 and above,Yes,Never,Mixed,Yes,Yes,Yes,No,No,Yes,Yes,Employed,6-7 hours,102.0,150.0,95,30.5,Obese,High Stage 2,1,0,0,1,1,3,1,1,1,0,0,1,1,1,4,3,5,0,3,1,3,3,1,0
+30 - 39,Female,160 - 169 cm,60 - 69 kg,No,Never,Mixed,Yes,No,No,No,No,Yes,No,Employed,6-7 hours,84.0,120.0,80,23.5,Normal,High Stage 1,0,0,0,1,0,1,0,0,0,0,0,1,0,1,2,3,3,0,3,1,1,2,0,0
+60 and above,Male,160 - 169 cm,60 - 69 kg,Yes,Never,Mixed,Yes,Yes,Yes,Yes,No,Yes,Yes,Unemployed,5-6 hours,91.0,160.0,100,25.3,Overweight,High Stage 2,1,1,0,1,1,4,1,1,1,1,0,1,1,1,5,3,3,0,2,1,2,3,1,3
+40 - 49,Female,160 - 169 cm,50 - 59 kg,No,Never,Mixed,Yes,No,Yes,No,No,No,No,Employed,6-7 hours,78.0,120.0,80,20.3,Normal,High Stage 1,1,0,0,0,0,1,0,0,1,0,0,0,0,1,3,3,2,0,3,1,1,2,0,0
+40 - 49,Male,170 - 179 cm,80 and above,Yes,Never,Mixed,Yes,Yes,No,No,No,Yes,No,Employed,6-7 hours,104.0,145.0,94,29.1,Overweight,High Stage 2,0,0,0,1,0,1,1,1,0,0,0,1,0,1,3,4,5,0,3,1,2,3,1,0
+60 and above,Female,150 - 159 cm,60 - 69 kg,Yes,Never,Mixed,Yes,Yes,No,No,No,Yes,Yes,Unemployed,6-7 hours,86.0,142.0,90,24.7,Normal,High Stage 2,0,0,0,1,1,2,1,1,0,0,0,1,1,1,5,2,3,0,3,1,1,3,0,3
+30 - 39,Male,170 - 179 cm,70 - 79 kg,Yes,1 - 3 times,Mixed,No,No,No,No,No,No,No,Employed,6-7 hours,90.0,120.0,80,24.7,Normal,High Stage 1,0,0,0,0,0,0,1,0,0,0,0,0,0,0,2,4,4,1,3,1,1,2,1,0
+60 and above,Female,150 - 159 cm,50 - 59 kg,No,Never,Mixed,Yes,No,Yes,No,No,No,Yes,Unemployed,0-5 hours,84.0,120.0,80,23.7,Normal,High Stage 1,1,0,0,0,1,2,0,0,1,0,0,0,1,1,5,2,2,0,1,1,1,2,0,3
+40 - 49,Male,170 - 179 cm,80 and above,Yes,Never,Mixed,Yes,No,No,No,No,No,No,Employed,5-6 hours,96.0,120.0,80,28.4,Overweight,High Stage 1,0,0,0,0,0,0,1,0,0,0,0,0,0,1,3,4,5,0,2,1,2,2,1,0
+50 - 59,Female,160 - 169 cm,70 - 79 kg,Yes,Never,Mixed,Yes,Yes,Yes,Yes,No,Yes,Yes,Employed,6-7 hours,91.0,138.0,90,26.7,Overweight,High Stage 1,1,1,0,1,1,4,1,1,1,1,0,1,1,1,4,3,4,0,3,1,2,2,0,0
+20 - 29,Male,180 cm and above,80 and above,No,Never,Mixed,No,No,No,No,No,No,No,Employed,6-7 hours,98.0,124.0,80,27.2,Overweight,High Stage 1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,5,5,0,3,1,2,2,1,0
+60 and above,Female,150 - 159 cm,50 - 59 kg,Yes,Never,Mixed,Yes,Yes,No,Yes,No,Yes,Yes,Unemployed,5-6 hours,82.0,144.0,92,22.8,Normal,High Stage 2,0,1,0,1,1,3,1,1,0,1,0,1,1,1,5,2,2,0,2,1,1,3,0,3
+30 - 39,Male,170 - 179 cm,70 - 79 kg,No,Never,Mixed,No,No,No,No,No,No,No,Employed,6-7 hours,89.0,120.0,80,25.4,Overweight,High Stage 1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,2,4,4,0,3,1,2,2,1,0
+50 - 59,Male,160 - 169 cm,80 and above,Yes,Never,Mixed,Yes,Yes,No,No,Yes,Yes,Yes,Employed,6-7 hours,106.0,152.0,96,32.2,Obese,High Stage 2,0,0,1,1,1,3,1,1,0,0,1,1,1,1,4,3,5,0,3,1,3,3,1,0
+40 - 49,Female,160 - 169 cm,60 - 69 kg,Yes,Never,Mixed,Yes,No,No,Yes,No,No,No,Unemployed,7-8 hours,88.0,120.0,80,25.1,Overweight,High Stage 1,0,1,0,0,0,1,1,0,0,1,0,0,0,1,3,3,3,0,4,1,2,2,0,3
+60 and above,Male,160 - 169 cm,60 - 69 kg,No,Never,Mixed,Yes,Yes,Yes,Yes,Yes,Yes,Yes,Employed,5-6 hours,87.0,155.0,98,23.8,Normal,High Stage 2,1,1,1,1,1,5,0,1,1,1,1,1,1,1,5,3,3,0,2,1,1,3,1,0
+30 - 39,Female,160 - 169 cm,60 - 69 kg,No,Never,Mixed,No,No,No,No,No,No,No,Employed,6-7 hours,83.0,120.0,80,22.4,Normal,High Stage 1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,2,3,3,0,3,1,1,2,0,0
+60 and above,Male,170 - 179 cm,80 and above,Yes,Never,Mixed,Yes,No,No,Yes,Yes,Yes,Yes,Employed,7-8 hours,92.0,120.0,80,25.5,Overweight,High Stage 1,0,1,1,1,1,4,1,0,0,1,1,1,1,1,5,4,5,0,4,1,2,2,1,0
+50 - 59,Female,160 - 169 cm,70 - 79 kg,Yes,Never,Mixed,Yes,Yes,No,No,Yes,Yes,Yes,Unemployed,6-7 hours,95.0,140.0,88,28.5,Overweight,High Stage 1,0,0,1,1,1,3,1,1,0,0,1,1,1,1,4,3,4,0,3,1,2,2,0,3
+40 - 49,Male,170 - 179 cm,70 - 79 kg,Yes,Never,Mixed,Yes,No,Yes,No,No,No,No,Employed,6-7 hours,90.0,120.0,80,26.1,Overweight,High Stage 1,1,0,0,0,0,1,1,0,1,0,0,0,0,1,3,4,4,0,3,1,2,2,1,0
+60 and above,Female,150 - 159 cm,50 - 59 kg,No,Never,Mixed,Yes,Yes,Yes,No,Yes,Yes,Yes,Unemployed,7-8 hours,82.0,150.0,94,22.9,Normal,High Stage 2,1,0,1,1,1,4,0,1,1,0,1,1,1,1,5,2,2,0,4,1,1,3,0,3
+40 - 49,Male,170 - 179 cm,80 and above,Yes,Never,Mixed,Yes,Yes,No,No,No,No,No,Employed,7-8 hours,101.0,142.0,90,29.4,Overweight,High Stage 2,0,0,0,0,0,0,1,1,0,0,0,0,0,1,3,4,5,0,4,1,2,3,1,0
+20 - 29,Female,160 - 169 cm,50 - 59 kg,No,Never,Mixed,No,No,No,No,No,No,No,Student,5-6 hours,80.0,120.0,80,20.8,Normal,High Stage 1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,3,2,0,2,1,1,2,0,2
+50 - 59,Male,160 - 169 cm,80 and above,Yes,Never,Mixed,Yes,Yes,No,No,No,Yes,Yes,Employed,6-7 hours,104.0,148.0,94,31.9,Obese,High Stage 2,0,0,0,1,1,2,1,1,0,0,0,1,1,1,4,3,5,0,3,1,3,3,1,0
+30 - 39,Female,150 - 159 cm,60 - 69 kg,No,Never,Mixed,No,No,No,No,No,No,No,Employed,6-7 hours,86.0,120.0,80,24.8,Normal,High Stage 1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,2,2,3,0,3,1,1,2,0,0
+60 and above,Male,170 - 179 cm,70 - 79 kg,Yes,Never,Mixed,Yes,Yes,No,No,No,Yes,Yes,Employed,6-7 hours,93.0,145.0,92,25.4,Overweight,High Stage 2,0,0,0,1,1,2,1,1,0,0,0,1,1,1,5,4,4,0,3,1,2,3,1,0
+60 and above,Female,150 - 159 cm,50 - 59 kg,No,Never,Mixed,Yes,No,Yes,Yes,Yes,No,Yes,Unemployed,7-8 hours,79.0,120.0,80,20.6,Normal,High Stage 1,1,1,1,0,1,4,0,0,1,1,1,0,1,1,5,2,2,0,4,1,1,2,0,3
+40 - 49,Male,170 - 179 cm,80 and above,Yes,Never,Mixed,No,Yes,Yes,Yes,Yes,Yes,No,Employed,7-8 hours,108.0,152.0,96,30.7,Obese,High Stage 2,1,1,1,1,0,4,1,1,1,1,1,1,0,0,3,4,5,0,4,1,3,3,1,0
+30 - 39,Female,160 - 169 cm,60 - 69 kg,Yes,Never,Mixed,No,No,No,No,No,No,No,Unemployed,7-8 hours,87.0,120.0,80,24.1,Normal,High Stage 1,0,0,0,0,0,0,1,0,0,0,0,0,0,0,2,3,3,0,4,1,1,2,0,3
+60 and above,Male,160 - 169 cm,60 - 69 kg,Yes,Never,Mixed,Yes,Yes,Yes,Yes,Yes,Yes,Yes,Unemployed,0-5 hours,89.0,158.0,98,25.5,Overweight,High Stage 2,1,1,1,1,1,5,1,1,1,1,1,1,1,1,5,3,3,0,1,1,2,3,1,3
+20 - 29,Male,160 - 169 cm,50 - 59 kg,Yes,Daily,Mostly healthy,No,No,No,No,No,No,No,Employed,6-7 hours,81.0,115.0,76,21.4,Normal,Normal,0,0,0,0,0,0,1,0,0,0,0,0,0,0,1,3,2,3,3,2,1,0,1,0
+50 - 59,Male,170 - 179 cm,80 and above,Yes,Never,Mixed,Yes,Yes,Yes,Yes,Yes,Yes,Yes,Employed,6-7 hours,98.0,140.0,88,28.0,Overweight,High Stage 1,1,1,1,1,1,5,1,1,1,1,1,1,1,1,4,4,5,0,3,1,2,2,1,0
+40 - 49,Female,150 - 159 cm,60 - 69 kg,Yes,Never,Mixed,Yes,No,No,No,No,No,No,Unemployed,6-7 hours,92.0,120.0,80,27.6,Overweight,High Stage 1,0,0,0,0,0,0,1,0,0,0,0,0,0,1,3,2,3,0,3,1,2,2,0,3
+20 - 29,Male,180 cm and above,70 - 79 kg,No,1 - 3 times,Mixed,No,No,No,No,No,No,No,Student,8 hours and above,88.0,120.0,80,23.3,Normal,High Stage 1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,5,4,1,5,1,1,2,1,2
+60 and above,Female,150 - 159 cm,60 - 69 kg,Yes,Never,Mixed,Yes,Yes,Yes,Yes,No,Yes,Yes,Employed,5-6 hours,85.0,146.0,92,25.4,Overweight,High Stage 2,1,1,0,1,1,4,1,1,1,1,0,1,1,1,5,2,3,0,2,1,2,3,0,0
+40 - 49,Male,170 - 179 cm,70 - 79 kg,Yes,Never,Mixed,Yes,No,No,No,No,No,No,Employed,6-7 hours,90.0,120.0,80,26.6,Overweight,High Stage 1,0,0,0,0,0,0,1,0,0,0,0,0,0,1,3,4,4,0,3,1,2,2,1,0
+50 - 59,Male,160 - 169 cm,70 - 79 kg,Yes,Never,Mixed,Yes,Yes,No,No,No,Yes,Yes,Unemployed,6-7 hours,90.0,144.0,92,28.2,Overweight,High Stage 2,0,0,0,1,1,2,1,1,0,0,0,1,1,1,4,3,4,0,3,1,2,3,1,3
+30 - 39,Male,170 - 179 cm,80 and above,Yes,Never,Mixed,No,No,No,No,No,No,No,Employed,6-7 hours,96.0,124.0,80,26.5,Overweight,High Stage 1,0,0,0,0,0,0,1,0,0,0,0,0,0,0,2,4,5,0,3,1,2,2,1,0
+60 and above,Female,150 - 159 cm,50 - 59 kg,No,Never,Mixed,Yes,Yes,Yes,Yes,Yes,Yes,Yes,Unemployed,7-8 hours,82.0,150.0,95,23.1,Normal,High Stage 2,1,1,1,1,1,5,0,1,1,1,1,1,1,1,5,2,2,0,4,1,1,3,0,3
+40 - 49,Male,170 - 179 cm,80 and above,Yes,1 - 3 times,Mixed,Yes,No,No,No,Yes,No,No,Employed,7-8 hours,104.0,120.0,80,29.7,Overweight,High Stage 1,0,0,1,0,0,1,1,0,0,0,1,0,0,1,3,4,5,1,4,1,2,2,1,0
+30 - 39,Female,160 - 169 cm,50 - 59 kg,No,Never,Mixed,No,No,No,No,No,No,No,Employed,6-7 hours,81.0,120.0,80,21.2,Normal,High Stage 1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,2,3,2,0,3,1,1,2,0,0
+60 and above,Male,160 - 169 cm,70 - 79 kg,Yes,Never,Mixed,Yes,Yes,No,No,Yes,Yes,Yes,Employed,6-7 hours,94.0,146.0,90,27.3,Overweight,High Stage 2,0,0,1,1,1,3,1,1,0,0,1,1,1,1,5,3,4,0,3,1,2,3,1,0
+20 - 29,Female,150 - 159 cm,50 - 59 kg,No,Never,Mixed,No,No,No,No,No,No,No,Student,8 hours and above,77.0,120.0,80,20.4,Normal,High Stage 1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,2,2,0,5,1,1,2,0,2
+50 - 59,Male,170 - 179 cm,80 and above,Yes,Never,Mixed,Yes,No,Yes,Yes,No,No,No,Employed,7-8 hours,98.0,120.0,80,27.1,Overweight,High Stage 1,1,1,0,0,0,2,1,0,1,1,0,0,0,1,4,4,5,0,4,1,2,2,1,0
+30 - 39,Female,160 - 169 cm,60 - 69 kg,No,Never,Mixed,No,No,No,No,No,No,No,Unemployed,6-7 hours,83.0,126.0,82,23.1,Normal,High Stage 1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,2,3,3,0,3,1,1,2,0,3
+60 and above,Male,160 - 169 cm,60 - 69 kg,Yes,Never,Mixed,Yes,No,No,Yes,No,Yes,Yes,Unemployed,5-6 hours,88.0,128.0,88,24.8,Normal,High Stage 1,0,1,0,1,1,3,1,0,0,1,0,1,1,1,5,3,3,0,2,1,1,2,1,3
+20 - 29,Male,160 - 169 cm,50 - 59 kg,No,Never,Mixed,No,No,No,No,No,No,No,Employed,7-8 hours,88.0,120.0,80,20.7,Normal,High Stage 1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,3,2,0,4,1,1,2,1,0
+40 - 49,Male,170 - 179 cm,80 and above,Yes,Never,Mixed,Yes,Yes,Yes,Yes,Yes,Yes,Yes,Employed,7-8 hours,106.0,150.0,96,30.1,Obese,High Stage 2,1,1,1,1,1,5,1,1,1,1,1,1,1,1,3,4,5,0,4,1,3,3,1,0
+30 - 39,Female,160 - 169 cm,60 - 69 kg,No,Never,Mixed,No,No,No,No,No,No,No,Employed,7-8 hours,85.0,120.0,78,24.2,Normal,Elevated,0,0,0,0,0,0,0,0,0,0,0,0,0,0,2,3,3,0,4,1,1,1,0,0
