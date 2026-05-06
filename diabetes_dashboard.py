@@ -684,7 +684,7 @@ with tab1:
 
 # TAB 2 — RISK FACTORS
 with tab2:
-    st.markdown('<p class="sh">🔍 What Drives Diabetes Risk in This Dataset?</p>', unsafe_allow_html=True)
+    st.markdown('<p class="sh">What Drives Diabetes Risk in This Dataset?</p>', unsafe_allow_html=True)
     st.markdown("""
     <div class="gc">
     <p style="font-size:13px;color:#aaa;line-height:1.7;margin:0">
@@ -706,7 +706,7 @@ with tab2:
     with r1c1:
         st.markdown('<div class="gc"><p class="gc-title">Top 15 Feature Importances (Extra Trees)</p>', unsafe_allow_html=True)
         top15      = feat_imp.sort_values(ascending=True).tail(15)
-        labels_15  = [FEAT_LBL.get(f, f) for f in top15.index]  # FIXED: was FEAT_LABELS
+        labels_15  = [FEAT_LBL.get(f, f) for f in top15.index]  
         fig, ax    = plt.subplots(figsize=(6, 5.5))
         bars       = ax.barh(labels_15, top15.values*100, color='#6C5CE7',
                              edgecolor='none', height=.65)
@@ -738,46 +738,7 @@ with tab2:
 
 
 
-    # Deep dive charts
-    st.markdown('<p class="sh">Deep Dive — Key Risk Factors</p>', unsafe_allow_html=True)
-    r2c1, r2c2, r2c3 = st.columns(3)
-
-    with r2c1:
-        st.markdown('<div class="gc"><p class="gc-title">BMI Category vs Diabetes Rate</p>', unsafe_allow_html=True)
-        bmi_ct  = df_full.groupby(['bmi_category','diabetes_diagnosis']).size().unstack(fill_value=0)
-        bmi_ct  = bmi_ct.reindex(['Underweight','Normal','Overweight','Obese'], fill_value=0)
-        bmi_pct = bmi_ct.div(bmi_ct.sum(axis=1), axis=0) * 100
-        fig, ax = plt.subplots(figsize=(4.5, 3.5))
-        mini_bar(ax, bmi_pct, 'BMI Category', 'BMI Category vs Diabetes Rate')  
-        ax.set_xticklabels(['Underweight','Normal','Overweight','Obese'], rotation=20, ha='right')
-        plt.tight_layout(); render_fig(fig)
-        st.markdown('<p style="font-size:11px;color:#777;margin-top:4px">Obese group shows highest diabetes rate. Overweight also elevated vs Normal.</p>', unsafe_allow_html=True)
-        st.markdown('</div>', unsafe_allow_html=True)
-
-    with r2c2:
-        st.markdown('<div class="gc"><p class="gc-title">Sleep Quality vs Diabetes Rate</p>', unsafe_allow_html=True)
-        sleep_order = ['0-5 hours','5-6 hours','6-7 hours','7-8 hours','8 hours and above']
-        sl_ct  = df_full.groupby(['sleep_hours','diabetes_diagnosis']).size().unstack(fill_value=0).reindex(sleep_order, fill_value=0)
-        sl_pct = sl_ct.div(sl_ct.sum(axis=1), axis=0) * 100
-        fig, ax = plt.subplots(figsize=(4.5, 3.5))
-        mini_bar(ax, sl_pct, 'Sleep hours/night', 'Sleep Quality vs Diabetes Rate')  
-        ax.set_xticklabels(['<5h','5–6h','6–7h','7–8h','>8h'], rotation=15, ha='right')
-        plt.tight_layout(); render_fig(fig)
-        st.markdown('<p style="font-size:11px;color:#777;margin-top:4px">Poor sleep (0–5h) is associated with higher diabetes rate. More sleep = lower risk.</p>', unsafe_allow_html=True)
-        st.markdown('</div>', unsafe_allow_html=True)
-
-    with r2c3:
-        st.markdown('<div class="gc"><p class="gc-title">Occupation vs Diabetes Rate</p>', unsafe_allow_html=True)
-        occ_ct  = df_full.groupby(['Occupation','diabetes_diagnosis']).size().unstack(fill_value=0)
-        occ_pct = occ_ct.div(occ_ct.sum(axis=1), axis=0) * 100
-        fig, ax = plt.subplots(figsize=(4.5, 3.5))
-        mini_bar(ax, occ_pct, 'Occupation', 'Occupation vs Diabetes Rate')  
-        ax.set_xticklabels(occ_ct.index, rotation=20, ha='right')
-        plt.tight_layout(); render_fig(fig)
-        st.markdown('<p style="font-size:11px;color:#777;margin-top:4px">Retired group shows highest rate — consistent with the strong age pattern.</p>', unsafe_allow_html=True)
-        st.markdown('</div>', unsafe_allow_html=True)
-
-    st.markdown("---")
+ 
 
 
 # TAB 3 — EDA EXPLORER
@@ -1010,7 +971,7 @@ with tab4:
     (n_iter=30, cv=StratifiedKFold(5), scoring=F1).
     Class imbalance handled via <code>class_weight='balanced'</code>.
     Feature scaling applied to LR &amp; SVM only (tree models are scale-invariant).
-    <br><b style="color:#ffeaa7">★ Best model: HistGradient Boosting</b>
+    <br><b style="color:#ffeaa7"> Best model: HistGradient Boosting</b>
     — Accuracy 89.1% · F1 91.4% · ROC-AUC 95.3%
     </p></div>""", unsafe_allow_html=True)
 
